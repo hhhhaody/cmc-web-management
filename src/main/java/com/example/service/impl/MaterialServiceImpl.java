@@ -26,6 +26,11 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void insert(Material material) {
+        Integer batch = materialMapper.getMaxBatch(material.getName());
+        if(batch != null){
+            material.setBatch(batch+1);
+        }
+        else material.setBatch(1);
         materialMapper.insert(material);
     }
 
@@ -39,11 +44,29 @@ public class MaterialServiceImpl implements MaterialService {
         Page<Material> p = (Page<Material>) materialList;
 
         PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+        materialMapper.calAmount();
         return pageBean;
     }
 
     @Override
     public List<Value> searchField(String field) {
         return materialMapper.searchField(field);
+    }
+
+    @Override
+    public Material getById(Integer material_id) {
+        return materialMapper.getById(material_id);
+    }
+
+    @Override
+    public void update(Material material) {
+        materialMapper.update(material);
+    }
+
+    @Override
+    public List<Value> search(Material material, String field) {
+        String name = material.getName();
+        String spec = material.getSpec();
+        return materialMapper.search(name,spec,field);
     }
 }

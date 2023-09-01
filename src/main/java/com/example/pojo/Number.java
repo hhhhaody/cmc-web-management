@@ -4,15 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Material {
-    private Integer id;
-    private String name;
-    private String spec;
+public class Number {
     private Integer amount;
-    private Integer threshold;
-    private Integer batch;
 }

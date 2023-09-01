@@ -41,11 +41,26 @@ public class MaterialController {
      * @param field
      * @return
      */
-    @GetMapping("/{field}")
+    @GetMapping("/search/{field}")
     public Result searchField(@PathVariable String field){
         log.info("根据field查询已有数据：{}",field);
 
         List<Value> res =  materialService.searchField(field);
+        return Result.success(res);
+    }
+
+    /**
+     * 弹框内搜索联想
+     * @param material
+     * @param field
+     * @return
+     */
+
+    @PostMapping("/search/{field}")
+    public Result searchSuggestion(@RequestBody Material material,@PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",material,field);
+
+        List<Value> res =  materialService.search(material,field);
         return Result.success(res);
     }
 
@@ -73,5 +88,27 @@ public class MaterialController {
         return Result.success();
     }
 
+    /**
+     * 根据id查询物料信息
+     * @param material_id
+     * @return
+     */
+    @GetMapping("/{material_id}")
+    public Result getById(@PathVariable Integer material_id){
+        log.info("根据id查询物料信息， id：{}",material_id);
+        Material material = materialService.getById(material_id);
+        return Result.success(material);
+    }
 
+    /**
+     * 根据id更新物料信息
+     * @param material
+     * @return
+     */
+    @PutMapping()
+    public Result update(@RequestBody Material material){
+        log.info("更新物料信息");
+        materialService.update(material);
+        return Result.success();
+    }
 }

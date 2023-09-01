@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.MaterialOperationMapper">
+
+    <select id="list" resultType="com.example.pojo.MaterialOperation">
+        select *
+        from material_operation
+        <where>
+            <if test="operation != null and operation != ''">
+                operation = #{operation}
+            </if>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator like concat('%', #{operator}, '%')
+            </if>
+            <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+            <if test="operateTimeStart != null and operateTimeEnd != null">
+                and operateTime between #{operateTimeStart} and #{operateTimeEnd}
+            </if>
+        </where>
+        Order by operateTime desc
+    </select>
+    <select id="search" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from material_operation
+        <where>
+            batch IN (
+            SELECT batch
+            FROM material_operation
+            GROUP BY batch
+            HAVING SUM(CASE WHEN operation = '入库' THEN amount ELSE 0 END) > SUM(CASE WHEN operation != '入库' THEN amount
+            ELSE 0 END)
+            )
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec = #{spec}
+            </if>
+            <if test="batch != null and batch != ''">
+                and batch = #{batch}
+            </if>
+        </where>
+        order by value
+    </select>
+    <select id="getByBatch" resultType="com.example.pojo.MaterialOperation">
+        SELECT id,
+               name,
+               spec,
+               supplyTime,
+               supplier,
+               operation,
+               operateTime,
+               operator,
+               receipt,
+               batch,
+               (SELECT SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END)
+                FROM material_operation
+                WHERE batch = mo.batch) AS amount
+        FROM material_operation AS mo
+        WHERE mo.batch = #{batch}
+          and operation = '入库';
+    </select>
+</mapper>

@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//用于搜索联想返回的字段
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Value {
-    private String value;
-    private Integer amount; //for batch stock number
+public class Sts {
+    private String ak;
+    private String sk;
+    private String token;
 }

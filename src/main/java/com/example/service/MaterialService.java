@@ -35,4 +35,19 @@ public interface MaterialService {
      * @return
      */
     List<Value> searchField(String field);
+
+    /**
+     * 根据id查询物料
+     * @param material_id
+     * @return
+     */
+    Material getById(Integer material_id);
+
+    /**
+     * 更新物料信息
+     * @param material
+     */
+    void update(Material material);
+
+    List<Value> search(Material material,String field);
 }
