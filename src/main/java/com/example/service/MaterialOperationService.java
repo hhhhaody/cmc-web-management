@@ -21,4 +21,6 @@ public interface MaterialOperationService {
     MaterialOperation getById(Integer id);
 
     void deleteById(Integer id);
+
+    void update(MaterialOperation materialOperation);
 }

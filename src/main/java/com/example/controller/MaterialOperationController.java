@@ -27,7 +27,7 @@ public class MaterialOperationController {
     public Result insert(@RequestBody MaterialOperation materialOperation){
         log.info("物料操作：{}",materialOperation);
         String batch = materialOperationService.insert(materialOperation);
-        return Result.success(batch);
+        return Result.success(batch+"成功"+materialOperation.getOperation()+materialOperation.getAmount().toString());
     }
 
     @GetMapping
@@ -69,6 +69,11 @@ public class MaterialOperationController {
         return Result.success(res);
     }
 
+    /**
+     * 根据批次号查询物料操作用于回显
+     * @param batch
+     * @return
+     */
     @GetMapping("/{batch}")
     public Result getByBatch(@PathVariable String batch){
         log.info("根据batch查询已有数据：{}",batch);
@@ -76,6 +81,11 @@ public class MaterialOperationController {
         return Result.success(materialOperation);
     }
 
+    /**
+     * 根据ID查询物料操作
+     * @param id
+     * @return
+     */
     @GetMapping("/id/{id}")
     public Result getById(@PathVariable Integer id){
         log.info("根据ID查询物料操作：{}",id);
@@ -83,11 +93,28 @@ public class MaterialOperationController {
         return Result.success(materialOperation);
     }
 
+    /**
+     * 根据ID删除物料操作
+     * @param id
+     * @return
+     */
     @DeleteMapping("/id/{id}")
     public Result deleteById(@PathVariable Integer id){
         log.info("根据id删除物料操作：{}",id);
 
         materialOperationService.deleteById(id);
         return Result.success();
+    }
+
+    /**
+     * 根据ID更新物料操作
+     * @param materialOperation
+     * @return
+     */
+    @PutMapping()
+    public Result update(@RequestBody MaterialOperation materialOperation){
+        log.info("更新物料操作信息");
+        materialOperationService.update(materialOperation);
+        return Result.success("成功修改"+materialOperation.getBatch()+"信息");
     }
 }

@@ -3,6 +3,27 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.MaterialOperationMapper">
+    <update id="update">
+        update material_operation
+        <set>
+            <if test="supplier != null and supplier != ''">
+                supplier = #{supplier},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="supplyTime != null">
+                supplyTime = #{supplyTime},
+            </if>
+            <if test="receipt != null and receipt != ''">
+                receipt = #{receipt},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
     <select id="list" resultType="com.example.pojo.MaterialOperation">
         select *
