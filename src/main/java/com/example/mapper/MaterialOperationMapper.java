@@ -3,10 +3,7 @@ package com.example.mapper;
 
 import com.example.pojo.MaterialOperation;
 import com.example.pojo.Value;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,4 +28,12 @@ public interface MaterialOperationMapper {
 
     @Delete("delete from material_operation where id = #{id}")
     void deleteById(Integer id);
+
+    @Select("select receipt from material_operation where id = #{id}")
+    String findById(Integer id);
+
+    void update(MaterialOperation materialOperation);
+
+    @Update("update material_operation set supplier = #{supplier}, supplyTime = #{supplyTime} where batch = #{batch}")
+    void updateByBatch(String batch, String supplier, LocalDateTime supplyTime);
 }
