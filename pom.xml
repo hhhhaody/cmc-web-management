@@ -14,7 +14,7 @@
     <name>cmc-web-management</name>
     <description>cmc-web-management</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>20</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -130,6 +130,16 @@
             <version>1.12.60</version> <!-- 根据实际版本号进行调整 -->
         </dependency>
 
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
 
 
     </dependencies>
