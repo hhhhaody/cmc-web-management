@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.mapper.DefectiveMapper;
 import com.example.mapper.MaterialMapper;
 import com.example.mapper.MaterialOperationMapper;
 import com.example.pojo.*;
@@ -27,18 +28,44 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Autowired
     private MaterialMapper materialMapper;
 
+    @Autowired
+    private DefectiveMapper defectiveMapper;
+
+
     @Transactional
     @Override
     public String insert(MaterialOperation materialOperation) {
         materialMapper.calAmount();
 
-        Integer batch = materialMapper.getBatch(materialOperation.getName(), materialOperation.getSpec());
 
+        //初次入库生成批次号
         if (materialOperation.getOperation().equals("入库")){
+            //拿到此规格物料的流水号用于生成批次号
+            Integer batch = materialMapper.getBatch(materialOperation.getName(), materialOperation.getSpec());
             materialOperation.setBatch(PinYinUtil.getBatchString(materialOperation.getName(), String.valueOf(batch), materialOperation.getOperateTime()));
         }
 
-        //TODO: 转入不良物料库
+        //转入不良物料库
+        if (materialOperation.getOperation().equals("转入不良物料库")){
+            String batch = materialOperation.getBatch();
+            //假如不存在，生成新entry
+            if(defectiveMapper.getByBatch(batch)==null){
+                Defective defective = new Defective();
+                defective.setBatch(materialOperation.getBatch());
+                defective.setName(materialOperation.getName());
+                defective.setSpec(materialOperation.getSpec());
+                defective.setDefectiveAmount(materialOperation.getAmount());
+                defective.setSupplier(materialOperation.getSupplier());
+                defective.setCreateTime(materialOperation.getOperateTime());
+                defectiveMapper.insert(defective);
+            }
+            else{
+                //如已存在，更新不良物料数量
+                Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
+                defectiveMapper.updateByBatch(batch,"defectiveAmount",materialOperation.getAmount()+defectiveAmount);
+            }
+
+        }
         materialOperationMapper.insert(materialOperation);
         return materialOperation.getBatch();
     }
@@ -87,8 +114,29 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Transactional
     @Override
     public void deleteById(Integer id) {
-        String receipt =  materialOperationMapper.findById(id);
+        MaterialOperation materialOperation = materialOperationMapper.findById(id);
+        String receipt =  materialOperation.getReceipt();
+        String batch =  materialOperation.getBatch();
+        Integer amount = materialOperation.getAmount();
         materialOperationMapper.deleteById(id);
+
+        //更新不良物料库的数量
+        if(defectiveMapper.getByBatch(batch) != null){
+            Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
+            Integer newAmount = defectiveAmount-amount;
+            //如果不良数==0，直接从不良物料库删除此条目
+            if(newAmount == 0){
+                defectiveMapper.deleteByBatch(batch);
+            } else if (newAmount < 0) {
+                throw new RuntimeException("无法删除此条目，不良物料已返用或报废");
+            } else{
+                defectiveMapper.updateByBatch(batch,"defectiveAmount",newAmount);
+            }
+        }
+
+
+
+        // 从EOS删除相关凭证
         // 创建 Gson 实例
         Gson gson = new Gson();
 

@@ -1,11 +1,8 @@
 package com.example.mapper;
 
 import com.example.pojo.Material;
-import com.example.pojo.MaterialOperation;
-import com.example.pojo.Number;
 import com.example.pojo.Value;
 import org.apache.ibatis.annotations.*;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 @Mapper
@@ -69,13 +66,13 @@ public interface MaterialMapper {
      */
     void update(Material material);
 
-    @Update("update material set amount = #{amount} where name = #{name} and spec = #{spec}")
-    void stock(String name, String spec, Integer amount);
+//    @Update("update material set amount = #{amount} where name = #{name} and spec = #{spec}")
+//    void stock(String name, String spec, Integer amount);
 
     void calAmount();
 
-    @Select("select amount from material where name = #{name} and spec = #{spec}")
-    Number getAmount(String name, String spec);
+//    @Select("select amount from material where name = #{name} and spec = #{spec}")
+//    Number getAmount(String name, String spec);
 
     List<Value> search(String name, String spec,String field);
 

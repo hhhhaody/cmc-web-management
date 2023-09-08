@@ -23,7 +23,8 @@ public class WebConfig {
                 // 对所有路径（"/**"）进行CORS配置
                 registry.addMapping("/**")
                         // 允许来自 "http://10.200.20.17:5173" 的跨域请求
-                        .allowedOrigins("http://10.200.20.17:5173")
+//                        .allowedOrigins("http://10.10.205.58:5173")
+                        .allowedOrigins("http://10.200.20.17:5173", "http://10.10.205.58:5173","http://localhost:5173")
                         // 允许的HTTP方法（GET、POST、PUT、DELETE、HEAD、OPTIONS）
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                         // 允许的HTTP头

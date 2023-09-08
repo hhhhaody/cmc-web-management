@@ -21,7 +21,20 @@ public interface MaterialOperationMapper {
 
     List<Value> search(String name, String spec, String batch, String field);
 
+    /**
+     * 计算此批次余量
+     * @param batch
+     * @return
+     */
     MaterialOperation getByBatch(String batch);
+
+    /**
+     * 只查这个批次的数据用于不良物料返用
+     * @param batch
+     * @return
+     */
+    @Select("select * from material_operation where batch = #{batch} and operation = '入库'")
+    MaterialOperation getByBatchSimple(String batch);
 
     @Select("select * from material_operation where id = #{id}")
     MaterialOperation getById(Integer id);
@@ -29,8 +42,8 @@ public interface MaterialOperationMapper {
     @Delete("delete from material_operation where id = #{id}")
     void deleteById(Integer id);
 
-    @Select("select receipt from material_operation where id = #{id}")
-    String findById(Integer id);
+    @Select("select * from material_operation where id = #{id}")
+    MaterialOperation findById(Integer id);
 
     void update(MaterialOperation materialOperation);
 

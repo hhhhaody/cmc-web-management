@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DefectiveMapper">
+    <select id="list" resultType="com.example.pojo.Defective">
+        select *
+        from defective
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+        </where>
+        Order by createTime desc
+    </select>
+    <select id="search" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from defective
+        <where>
+            batch IN (
+            SELECT batch
+            FROM defective
+            where defectiveAmount > 0
+            )
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec = #{spec}
+            </if>
+            <if test="batch != null and batch != ''">
+                and batch = #{batch}
+            </if>
+        </where>
+        order by value
+    </select>
+</mapper>

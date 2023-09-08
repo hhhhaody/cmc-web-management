@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Value {
     private String value;
-    private Integer amount; //for batch stock number
+//    private Integer amount; //for batch stock number
 }

@@ -225,8 +225,8 @@ public class Ecloud {
 
 
     public static void main(String[] args){
-//        getAssumeRole();
+        getAssumeRole();
 //        getUrl();
-        delete("490697569156988928.jpg");
+//        delete("490697569156988928.jpg");
     }
 }
