@@ -26,4 +26,6 @@ public interface DefectiveMapper {
 
     @Update("update defective set ${field} = #{amount} where batch = #{batch}")
     void updateByBatch(String batch, String field, Integer amount);
+
+    void calAmount();
 }

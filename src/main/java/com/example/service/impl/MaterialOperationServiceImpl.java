@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.example.mapper.DefectiveMapper;
+import com.example.mapper.DefectiveOperationMapper;
 import com.example.mapper.MaterialMapper;
 import com.example.mapper.MaterialOperationMapper;
 import com.example.pojo.*;
@@ -31,6 +32,8 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Autowired
     private DefectiveMapper defectiveMapper;
 
+    @Autowired
+    private DefectiveOperationMapper defectiveOperationMapper;
 
     @Transactional
     @Override
@@ -48,6 +51,9 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
         //转入不良物料库
         if (materialOperation.getOperation().equals("转入不良物料库")){
             String batch = materialOperation.getBatch();
+            if(batch.endsWith("F")){
+                batch=batch.replace("F","");
+            }
             //假如不存在，生成新entry
             if(defectiveMapper.getByBatch(batch)==null){
                 Defective defective = new Defective();
@@ -58,11 +64,6 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
                 defective.setSupplier(materialOperation.getSupplier());
                 defective.setCreateTime(materialOperation.getOperateTime());
                 defectiveMapper.insert(defective);
-            }
-            else{
-                //如已存在，更新不良物料数量
-                Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
-                defectiveMapper.updateByBatch(batch,"defectiveAmount",materialOperation.getAmount()+defectiveAmount);
             }
 
         }
@@ -100,6 +101,7 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
         String decode = null;
         try {
             decode = java.net.URLDecoder.decode(batch, "UTF-8");
+            if(decode.endsWith("F")) return materialOperationMapper.getByBatchReturned(decode);
             return materialOperationMapper.getByBatch(decode);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -118,21 +120,26 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
         String receipt =  materialOperation.getReceipt();
         String batch =  materialOperation.getBatch();
         Integer amount = materialOperation.getAmount();
+        LocalDateTime operateTime = materialOperation.getOperateTime();
         materialOperationMapper.deleteById(id);
 
-        //更新不良物料库的数量
-        if(defectiveMapper.getByBatch(batch) != null){
-            Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
+        if(batch.endsWith("F")){
+            defectiveOperationMapper.deleteByOperateTime(operateTime);
+        }
+
+        if(materialOperation.getOperation().equals("转入不良物料库")){
+        if(defectiveMapper.getByBatch(batch.replace("F","")) != null){
+            Integer defectiveAmount = defectiveMapper.getByBatch(batch.replace("F","")).getDefectiveAmount();
             Integer newAmount = defectiveAmount-amount;
             //如果不良数==0，直接从不良物料库删除此条目
             if(newAmount == 0){
                 defectiveMapper.deleteByBatch(batch);
-            } else if (newAmount < 0) {
+            } else {
                 throw new RuntimeException("无法删除此条目，不良物料已返用或报废");
-            } else{
-                defectiveMapper.updateByBatch(batch,"defectiveAmount",newAmount);
             }
-        }
+        }}
+
+
 
 
 
@@ -154,10 +161,11 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Override
     @Transactional
     public void update(MaterialOperation materialOperation) {
-        String batch = materialOperation.getBatch();
-        String supplier = materialOperation.getSupplier();
-        LocalDateTime supplyTime =  materialOperation.getSupplyTime();
         materialOperationMapper.update(materialOperation);
-        materialOperationMapper.updateByBatch(batch,supplier,supplyTime);
+        if(materialOperation.getBatch().endsWith("F")){
+            System.out.println("更新不良物料库操作");
+            System.out.println("-------------------------------------------");
+            defectiveOperationMapper.updateByOperateTime(materialOperation);
+        }
     }
 }

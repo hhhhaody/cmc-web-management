@@ -37,6 +37,8 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public PageBean page(Integer page, Integer pageSize,String name, String spec) {
 //        Long count = materialMapper.count();
+        materialMapper.calAmount();
+
         PageHelper.startPage(page,pageSize);
 
 //        List<Material> materialList = materialMapper.page((page - 1) * pageSize, pageSize);
@@ -44,7 +46,6 @@ public class MaterialServiceImpl implements MaterialService {
         Page<Material> p = (Page<Material>) materialList;
 
         PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
-        materialMapper.calAmount();
         return pageBean;
     }
 

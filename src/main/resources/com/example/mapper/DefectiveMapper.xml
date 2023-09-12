@@ -3,6 +3,43 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.DefectiveMapper">
+    <update id="calAmount">
+        UPDATE defective AS d
+            LEFT JOIN (
+                SELECT
+                    a.batch,
+                    a.amount AS material_operation_amount,
+                    b.amount AS defective_operation_amount,
+                    COALESCE(b.returned, 0) AS returned,
+                    COALESCE(b.scrapped, 0) AS scrapped
+                FROM
+                    (SELECT
+                         REPLACE(batch, 'F', '') AS batch,
+                         SUM(CASE WHEN operation = '转入不良物料库' THEN amount END) AS amount
+                     FROM
+                         material_operation
+                     GROUP BY
+                         REPLACE(batch, 'F', '')) AS a
+                        LEFT JOIN
+                    (SELECT
+                         batch,
+                         SUM(CASE WHEN operation = '返用' THEN amount END) AS returned,
+                         SUM(CASE WHEN operation = '报废' THEN amount END) AS scrapped,
+                         SUM(amount) AS amount
+                     FROM
+                         defective_operation
+                     GROUP BY
+                         batch) AS b
+                    ON
+                        a.batch = b.batch
+            ) AS c
+            ON
+                d.batch = c.batch
+        SET
+            d.defectiveAmount = COALESCE(c.material_operation_amount, 0) - COALESCE(c.defective_operation_amount, 0),
+            d.returnedAmount = CASE WHEN c.returned= 0 THEN NULL ELSE c.returned END,
+            d.scrappedAmount = CASE WHEN c.scrapped= 0 THEN NULL ELSE c.scrapped END;
+    </update>
     <select id="list" resultType="com.example.pojo.Defective">
         select *
         from defective
