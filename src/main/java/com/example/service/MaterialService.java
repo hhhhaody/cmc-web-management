@@ -49,5 +49,11 @@ public interface MaterialService {
      */
     void update(Material material);
 
+    /**
+     * 弹框内搜索联想
+     * @param material
+     * @param field
+     * @return
+     */
     List<Value> search(Material material,String field);
 }

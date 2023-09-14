@@ -47,6 +47,10 @@ public interface MaterialOperationMapper {
 
     void update(MaterialOperation materialOperation);
 
-
+    /**
+     * 计算返用批次总剩余量
+     * @param decode
+     * @return
+     */
     MaterialOperation getByBatchReturned(String decode);
 }

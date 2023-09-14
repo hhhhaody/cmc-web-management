@@ -24,8 +24,5 @@ public interface DefectiveMapper {
     @Select("select * from defective where batch = #{batch}")
     Defective getByBatch(String batch);
 
-    @Update("update defective set ${field} = #{amount} where batch = #{batch}")
-    void updateByBatch(String batch, String field, Integer amount);
-
     void calAmount();
 }

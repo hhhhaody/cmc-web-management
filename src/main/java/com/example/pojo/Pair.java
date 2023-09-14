@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Number {
-    private Integer amount;
+public class Pair {
+    private String newName;
+    private String section;
 }
