@@ -20,14 +20,14 @@ public class DefectiveServiceImpl implements DefectiveService {
 
     @Override
     public PageBean page(Integer page, Integer pageSize, String name, String spec, String supplier) {
+        defectiveMapper.calAmount();
+
         PageHelper.startPage(page,pageSize);
 
         List<Defective> defectiveList = defectiveMapper.list(name,spec,supplier);
         Page<Defective> p = (Page<Defective>) defectiveList;
 
         PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
-        //TODO: 计算各类数量
-//        defectiveMapper.calAmount();
         return pageBean;
     }
 

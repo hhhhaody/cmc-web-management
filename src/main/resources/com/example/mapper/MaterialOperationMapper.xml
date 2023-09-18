@@ -90,4 +90,26 @@
         WHERE mo.batch = #{batch}
           and operation = '入库';
     </select>
+    <select id="getByBatchReturned" resultType="com.example.pojo.MaterialOperation">
+
+        SELECT
+            id,
+            name,
+            spec,
+            supplyTime,
+            supplier,
+            operation,
+            operateTime,
+            operator,
+            receipt,
+            batch,
+            (SELECT SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END) AS total_amount
+             FROM material_operation
+             WHERE batch = #{batch}
+             GROUP BY batch) AS amount
+        FROM material_operation AS mo
+        WHERE mo.batch = #{batch} limit 1;
+
+
+    </select>
 </mapper>

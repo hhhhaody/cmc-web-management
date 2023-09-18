@@ -7,22 +7,6 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 @Mapper
 public interface MaterialMapper {
-//    /**
-//     * 查询总记录数
-//     * @return
-//     */
-//    @Select("select count(*) from material")
-//    public Long count();
-//
-//    /**
-//     * 分页查询获取列表数据
-//     * @param page
-//     * @param pageSize
-//     * @return
-//     */
-//    @Select("select * from material limit #{page},#{pageSize}")
-//    public List<Material> page(Integer page, Integer pageSize);
-
 
     /**
      * 查询物料
@@ -66,19 +50,28 @@ public interface MaterialMapper {
      */
     void update(Material material);
 
-//    @Update("update material set amount = #{amount} where name = #{name} and spec = #{spec}")
-//    void stock(String name, String spec, Integer amount);
-
+    /**
+     * 计算库存量
+     */
     void calAmount();
 
-//    @Select("select amount from material where name = #{name} and spec = #{spec}")
-//    Number getAmount(String name, String spec);
 
     List<Value> search(String name, String spec,String field);
 
+    /**
+     * 获得当前物料类型中最大的流水号以生成新的规格的流水号
+     * @param name
+     * @return
+     */
     @Select("SELECT Max(batch) FROM material where name = #{name}")
     Integer getMaxBatch(String name);
 
+    /**
+     * 根据名称和规格型号获得此规格物料的流水号用于生成批次号
+     * @param name
+     * @param spec
+     * @return
+     */
     @Select("SELECT batch FROM material where name = #{name} and spec = #{spec}")
     Integer getBatch(String name, String spec);
 }

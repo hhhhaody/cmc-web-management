@@ -47,6 +47,10 @@ public interface MaterialOperationMapper {
 
     void update(MaterialOperation materialOperation);
 
-    @Update("update material_operation set supplier = #{supplier}, supplyTime = #{supplyTime} where batch = #{batch}")
-    void updateByBatch(String batch, String supplier, LocalDateTime supplyTime);
+    /**
+     * 计算返用批次总剩余量
+     * @param decode
+     * @return
+     */
+    MaterialOperation getByBatchReturned(String decode);
 }

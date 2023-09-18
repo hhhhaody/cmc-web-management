@@ -37,36 +37,47 @@ public class DefectiveOperationServiceImpl implements DefectiveOperationService 
     @Transactional
     @Override
     public void insert(DefectiveOperation defectiveOperation) {
-        String batch = defectiveOperation.getBatch();
-        if(defectiveOperation.getOperation().equals("报废")){
-            if(defectiveMapper.getByBatch(batch).getScrappedAmount() != null){
-                Integer scrappedAmount = defectiveMapper.getByBatch(batch).getScrappedAmount();
-                defectiveMapper.updateByBatch(batch,"scrappedAmount",defectiveOperation.getAmount()+scrappedAmount);
-            }
-            else{
-                defectiveMapper.updateByBatch(batch,"scrappedAmount",defectiveOperation.getAmount());
-            }
-        }
-        else{
-            if(defectiveMapper.getByBatch(batch).getReturnedAmount() != null){
-                Integer scrappedAmount = defectiveMapper.getByBatch(batch).getScrappedAmount();
-                defectiveMapper.updateByBatch(batch,"returnedAmount",defectiveOperation.getAmount()+scrappedAmount);
-            }
-            else{
-                defectiveMapper.updateByBatch(batch,"returnedAmount",defectiveOperation.getAmount());
-            }
-            MaterialOperation materialOperation= materialOperationMapper.getByBatchSimple(batch);
+        if(defectiveOperation.getOperation().equals("返用")){
+            MaterialOperation materialOperation= materialOperationMapper.getByBatchSimple(defectiveOperation.getBatch());
             materialOperation.setAmount(defectiveOperation.getAmount());
-            materialOperation.setBatch(batch+"1");
+            materialOperation.setBatch(defectiveOperation.getBatch()+"F");
             materialOperation.setOperateTime(defectiveOperation.getOperateTime());
             materialOperation.setReceipt(defectiveOperation.getReceipt());
             materialOperation.setOperation("入库");
             materialOperation.setOperator(defectiveOperation.getOperator());
             materialOperationMapper.insert(materialOperation);
         }
-        Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
-        defectiveMapper.updateByBatch(batch,"defectiveAmount",defectiveAmount-defectiveOperation.getAmount());
+//        String batch = defectiveOperation.getBatch();
+//        if(defectiveOperation.getOperation().equals("报废")){
+//            if(defectiveMapper.getByBatch(batch).getScrappedAmount() != null){
+//                Integer scrappedAmount = defectiveMapper.getByBatch(batch).getScrappedAmount();
+//                defectiveMapper.updateByBatch(batch,"scrappedAmount",defectiveOperation.getAmount()+scrappedAmount);
+//            }
+//            else{
+//                defectiveMapper.updateByBatch(batch,"scrappedAmount",defectiveOperation.getAmount());
+//            }
+//        }
+//        else{
+//            if(defectiveMapper.getByBatch(batch).getReturnedAmount() != null){
+//                Integer scrappedAmount = defectiveMapper.getByBatch(batch).getScrappedAmount();
+//                defectiveMapper.updateByBatch(batch,"returnedAmount",defectiveOperation.getAmount()+scrappedAmount);
+//            }
+//            else{
+//                defectiveMapper.updateByBatch(batch,"returnedAmount",defectiveOperation.getAmount());
+//            }
+//            MaterialOperation materialOperation= materialOperationMapper.getByBatchSimple(batch);
+//            materialOperation.setAmount(defectiveOperation.getAmount());
+//            materialOperation.setBatch(batch+"F");
+//            materialOperation.setOperateTime(defectiveOperation.getOperateTime());
+//            materialOperation.setReceipt(defectiveOperation.getReceipt());
+//            materialOperation.setOperation("入库");
+//            materialOperation.setOperator(defectiveOperation.getOperator());
+//            materialOperationMapper.insert(materialOperation);
+//        }
+//        Integer defectiveAmount = defectiveMapper.getByBatch(batch).getDefectiveAmount();
+//        defectiveMapper.updateByBatch(batch,"defectiveAmount",defectiveAmount-defectiveOperation.getAmount());
         defectiveOperationMapper.insert(defectiveOperation);
+        defectiveMapper.calAmount();
     }
 
     @Override
