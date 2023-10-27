@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ProductMapper">
+    <update id="update">
+        update product
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="spec != null and spec != ''">
+                spec = #{spec},
+            </if>
+            <if test="threshold != null">
+                threshold = #{threshold},
+            </if>
+            <if test="stackThreshold != null">
+                stackThreshold = #{stackThreshold},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="calAmount">
+        UPDATE product AS p
+            LEFT JOIN (
+                SELECT
+                    name,
+                    spec,
+                    SUM(CASE
+                            WHEN quality IN ('合格品', '返修件') AND operation = '入库' THEN amount
+                            WHEN quality IN ('合格品', '返修件') AND operation = '出库' THEN -amount
+                        END) AS qualified,
+                    SUM(CASE
+                            WHEN quality = '废品' AND operation = '入库' THEN amount
+                            WHEN quality = '废品' AND operation = '出库' THEN -amount
+                        END) AS discarded
+                FROM product_operation
+                GROUP BY name, spec
+            ) AS op ON p.name = op.name AND p.spec = op.spec
+        SET p.qualified = COALESCE(op.qualified, NULL),
+            p.discarded = COALESCE(op.discarded, NULL);
+    </update>
+    <select id="list" resultType="com.example.pojo.Product">
+        select *
+        from product
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+        </where>
+        Order by name
+    </select>
+    <select id="search" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from product
+        <where>
+            <if test="name != null and name != ''">
+                name = #{name}
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec = #{spec}
+            </if>
+        </where>
+        order by value
+    </select>
+</mapper>

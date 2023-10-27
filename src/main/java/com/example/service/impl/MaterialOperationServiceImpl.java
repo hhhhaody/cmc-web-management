@@ -116,7 +116,7 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Transactional
     @Override
     public void deleteById(Integer id) {
-        MaterialOperation materialOperation = materialOperationMapper.findById(id);
+        MaterialOperation materialOperation = materialOperationMapper.getById(id);
         String receipt =  materialOperation.getReceipt();
         String batch =  materialOperation.getBatch();
         Integer amount = materialOperation.getAmount();

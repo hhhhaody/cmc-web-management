@@ -42,9 +42,6 @@ public interface MaterialOperationMapper {
     @Delete("delete from material_operation where id = #{id}")
     void deleteById(Integer id);
 
-    @Select("select * from material_operation where id = #{id}")
-    MaterialOperation findById(Integer id);
-
     void update(MaterialOperation materialOperation);
 
     /**

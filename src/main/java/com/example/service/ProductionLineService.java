@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.pojo.IdStrPair;
 import com.example.pojo.PageBean;
 import com.example.pojo.ProductionLine;
 import com.example.pojo.Value;
@@ -19,4 +20,8 @@ public interface ProductionLineService {
     void updateSectionName(String section, String newName);
 
     void updateStations(ProductionLine productionLine);
+
+    List<Value> searchField(String field);
+
+    List<IdStrPair> getStationsIds(String section);
 }

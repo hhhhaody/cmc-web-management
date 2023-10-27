@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.example.mapper.ProductionLineMapper;
+import com.example.pojo.IdStrPair;
 import com.example.pojo.PageBean;
 import com.example.pojo.ProductionLine;
 import com.example.pojo.Value;
@@ -63,5 +64,15 @@ public class ProductionLineServiceImpl implements ProductionLineService {
     public void updateStations(ProductionLine productionLine) {
         productionLineMapper.deleteBySection(productionLine.getSection());
         insert(productionLine);
+    }
+
+    @Override
+    public List<Value> searchField(String field) {
+        return productionLineMapper.searchField(field);
+    }
+
+    @Override
+    public List<IdStrPair> getStationsIds(String section) {
+        return productionLineMapper.getStationsIds(section);
     }
 }

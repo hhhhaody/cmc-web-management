@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.pojo.IdStrPair;
 import com.example.pojo.ProductionLine;
 import com.example.pojo.Value;
 import org.apache.ibatis.annotations.*;
@@ -32,4 +33,21 @@ public interface ProductionLineMapper {
 
     @Update("update production_line set section = #{newName} where section = #{section}")
     void updateSectionName(String section, String newName);
+
+    /**
+     * 查询此field已有数据
+     * @param field
+     * @return
+     */
+    @Select("select distinct ${field} as value from production_line order by value")
+    List<Value> searchField(String field);
+
+    @Select("select id, station from production_line where section = #{section}")
+    List<IdStrPair> getStationsIds(String section);
+
+    @Select("select section from production_line where id = #{productionLine}")
+    String getSectionById(Integer productionLine);
+
+    @Select("select station from production_line where id = #{productionLine}")
+    String getStationById(Integer productionLine);
 }

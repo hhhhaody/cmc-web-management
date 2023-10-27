@@ -84,4 +84,31 @@ public class ProductionLineController {
         productionLineService.updateStations(productionLine);
         return Result.success();
     }
+
+    /**
+     * 搜索框联想查询
+     * @param field
+     * @return
+     */
+    @GetMapping("/search/{field}")
+    public Result searchField(@PathVariable String field){
+        log.info("根据field查询已有数据：{}",field);
+
+        List<Value> res =  productionLineService.searchField(field);
+        return Result.success(res);
+    }
+
+
+    /**
+     * 查询此工段对应工位id及工位名
+     * @param section
+     * @return
+     */
+    @GetMapping("/{section}/ids")
+    public Result getStationsIds(@PathVariable String section){
+        log.info("根据工位查询工段及其id， section：{}",section);
+        List<IdStrPair> stationsIdsList = productionLineService.getStationsIds(section);
+        return Result.success(stationsIdsList);
+    }
+
 }
