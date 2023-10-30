@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.FacilityMapper">
+    <update id="update">
+        update facility
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="spec != null and spec != ''">
+                spec = #{spec},
+            </if>
+            <if test="station != null and station != ''">
+                station = #{station},
+            </if>
+            <if test="section != null and section != ''">
+                section = #{section},
+            </if>
+            <if test="supplier != null and supplier != ''">
+                supplier = #{supplier},
+            </if>
+            <if test="purchaseTime != null">
+                purchaseTime = #{purchaseTime},
+            </if>
+            <if test="contact != null and contact != ''">
+                contact = #{contact},
+            </if>
+            <if test="contactNo != null and contactNo != ''">
+                contactNo = #{contactNo},
+            </if>
+            <if test="warranty != null and warranty != ''">
+                warranty = #{warranty},
+            </if>
+            <if test="dailyMaintenance != null and dailyMaintenance != ''">
+                dailyMaintenance = #{dailyMaintenance},
+            </if>
+            <if test="firstLevelMaintenance != null and firstLevelMaintenance != ''">
+                firstLevelMaintenance = #{firstLevelMaintenance},
+            </if>
+            <if test="secondLevelMaintenance != null and secondLevelMaintenance != ''">
+                secondLevelMaintenance = #{secondLevelMaintenance},
+            </if>
+            <if test="attachment != null and attachment != ''">
+                attachment = #{attachment},
+            </if>
+
+        </set>
+        where id = #{id}
+    </update>
+    <select id="list" resultType="com.example.pojo.Facility">
+        select *
+        from facility
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+        <if test="section != null and section != ''">
+                and section like concat('%', #{section}, '%')
+            </if>
+        <if test="status != null and status != ''">
+                and status like concat('%', #{status}, '%')
+            </if>
+        <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+        </where>
+        Order by name
+    </select>
+</mapper>

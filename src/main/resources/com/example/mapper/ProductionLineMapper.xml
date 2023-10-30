@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ProductionLineMapper">
+    <select id="search" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from production_line
+        <where>
+            <if test="station != null and station != ''">
+                station = #{station}
+            </if>
+            <if test="section != null and section != ''">
+                and section = #{section}
+            </if>
+        </where>
+        order by value
+    </select>
+</mapper>

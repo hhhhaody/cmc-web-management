@@ -50,4 +50,6 @@ public interface ProductionLineMapper {
 
     @Select("select station from production_line where id = #{productionLine}")
     String getStationById(Integer productionLine);
+
+    List<Value> search(String section, String station, String field);
 }

@@ -1,10 +1,7 @@
 package com.example.service.impl;
 
 import com.example.mapper.ProductionLineMapper;
-import com.example.pojo.IdStrPair;
-import com.example.pojo.PageBean;
-import com.example.pojo.ProductionLine;
-import com.example.pojo.Value;
+import com.example.pojo.*;
 import com.example.service.ProductionLineService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -74,5 +71,12 @@ public class ProductionLineServiceImpl implements ProductionLineService {
     @Override
     public List<IdStrPair> getStationsIds(String section) {
         return productionLineMapper.getStationsIds(section);
+    }
+
+    @Override
+    public List<Value> search(Facility facility, String field) {
+        String section = facility.getSection();
+        String station = facility.getStation();
+        return productionLineMapper.search(section,station,field);
     }
 }

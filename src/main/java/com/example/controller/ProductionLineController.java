@@ -100,6 +100,21 @@ public class ProductionLineController {
 
 
     /**
+     * 弹框内搜索联想
+     * @param facility
+     * @param field
+     * @return
+     */
+
+    @PostMapping("/search/{field}")
+    public Result searchSuggestion(@RequestBody Facility facility,@PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",facility,field);
+
+        List<Value> res =  productionLineService.search(facility,field);
+        return Result.success(res);
+    }
+
+    /**
      * 查询此工段对应工位id及工位名
      * @param section
      * @return

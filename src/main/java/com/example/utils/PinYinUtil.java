@@ -77,6 +77,10 @@ import java.time.format.DateTimeFormatter;
             return getFirstSpell(name).toUpperCase()+"#"+spec+"-"+dtf.format(operateTime);
         }
 
+    public static String getSerialString(String name, String batch, String batchSame){
+        return getFirstSpell(name).toUpperCase()+batch+"-"+batchSame;
+    }
+
         public static void main(String[] args) {
 
             System.out.println(getFullSpell("吃饭了吗"));

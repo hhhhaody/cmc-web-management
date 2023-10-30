@@ -1,9 +1,6 @@
 package com.example.service;
 
-import com.example.pojo.IdStrPair;
-import com.example.pojo.PageBean;
-import com.example.pojo.ProductionLine;
-import com.example.pojo.Value;
+import com.example.pojo.*;
 
 import java.util.List;
 
@@ -24,4 +21,6 @@ public interface ProductionLineService {
     List<Value> searchField(String field);
 
     List<IdStrPair> getStationsIds(String section);
+
+    List<Value> search(Facility facility, String field);
 }
