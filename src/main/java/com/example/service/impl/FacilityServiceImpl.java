@@ -1,7 +1,9 @@
 package com.example.service.impl;
 
 import com.example.mapper.FacilityMapper;
+import com.example.mapper.FacilityStatusMapper;
 import com.example.pojo.Facility;
+import com.example.pojo.FacilityStatus;
 import com.example.pojo.PageBean;
 import com.example.pojo.Value;
 import com.example.service.FacilityService;
@@ -12,12 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class FacilityServiceImpl implements FacilityService {
     @Autowired
     FacilityMapper facilityMapper;
+
+    @Autowired
+    FacilityStatusMapper facilityStatusMapper;
 
     @Override
     public List<Value> searchField(String field) {
@@ -26,8 +32,11 @@ public class FacilityServiceImpl implements FacilityService {
 
     @Override
     public List<Value> search(Facility facility, String field) {
-        //TODO:
-        return null;
+        String name = facility.getName();
+        String section = facility.getSection();
+        String spec = facility.getSpec();
+        String serialNo = facility.getSerialNo();
+        return facilityMapper.search(name,spec,section,serialNo,field);
     }
 
     @Override
@@ -77,11 +86,25 @@ public class FacilityServiceImpl implements FacilityService {
     @Override
     public void updateStatus(Integer facility_id) {
         Facility facility = facilityMapper.getById(facility_id);
+        FacilityStatus facilityStatus = new FacilityStatus();
+        facilityStatus.setName(facility.getName());
+        facilityStatus.setSpec(facility.getSpec());
+        facilityStatus.setStation(facility.getStation());
+        facilityStatus.setSection(facility.getSection());
+        facilityStatus.setSerialNo(facility.getSerialNo());
+        facilityStatus.setUpdateTime(LocalDateTime.now());
+
         if (facility.getStatus().equals("正常使用")){
+            facilityStatus.setBeforeStatus("正常使用");
+            facilityStatus.setAfterStatus("停用");
             facilityMapper.updateStatus(facility_id,"停用");
         }
         else{
+            facilityStatus.setBeforeStatus("停用");
+            facilityStatus.setAfterStatus("正常使用");
             facilityMapper.updateStatus(facility_id,"正常使用");
         }
+
+        facilityStatusMapper.insert(facilityStatus);
     }
 }

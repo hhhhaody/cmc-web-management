@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TroubleshootingRecordMapper">
+
+    <select id="list" resultType="com.example.pojo.TroubleshootingRecord">
+        select *
+        from troubleshooting_record
+        <where>
+            <if test="section != null and section != ''">
+                section = #{section}
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status}
+            </if>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="repairman != null and repairman != ''">
+                and repairman like concat('%', #{repairman}, '%')
+            </if>
+            <if test="completeTimeStart != null and completeTimeEnd != null">
+                and completeTime between #{completeTimeStart} and #{completeTimeEnd}
+            </if>
+        </where>
+        Order by completeTime desc
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.FacilityStatusMapper">
+    <select id="list" resultType="com.example.pojo.FacilityStatus">
+        select *
+        from facility_status
+        <where>
+            <if test="section != null and section != ''">
+                section = #{section}
+            </if>
+            <if test="serialNo != null and serialNo != ''">
+                serialNo = #{serialNo}
+            </if>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="updateTimeStart != null and updateTimeEnd != null">
+                and updateTime between #{updateTimeStart} and #{updateTimeEnd}
+            </if>
+        </where>
+        Order by updateTime desc
+    </select>
+</mapper>

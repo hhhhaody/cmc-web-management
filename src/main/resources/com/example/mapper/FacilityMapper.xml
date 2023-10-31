@@ -71,4 +71,23 @@
         </where>
         Order by name
     </select>
+    <select id="search" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from facility
+        <where>
+            status = '正常使用'
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec = #{spec}
+            </if>
+            <if test="section != null and section != ''">
+                and section = #{section}
+            </if>
+            <if test="serialNo != null and serialNo != ''">
+                and serialNo = #{serialNo}
+            </if>
+        </where>
+        order by value
+    </select>
 </mapper>

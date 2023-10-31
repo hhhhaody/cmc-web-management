@@ -44,4 +44,9 @@ public interface FacilityMapper {
 
     @Update("update facility set status = #{status} where id = #{facility_id}")
     void updateStatus(Integer facility_id, String status);
+
+    List<Value> search(String name, String spec, String section, String serialNo, String field);
+
+    @Select("select * from facility where serialNo = #{serialNo}")
+    Facility getBySerialNo(String serialNo);
 }

@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.mapper.EnergyConsumptionRecordMapper;
 import com.example.mapper.ProductionLineMapper;
 import com.example.pojo.EnergyConsumptionRecord;
+import com.example.pojo.IdStrPair;
 import com.example.pojo.PageBean;
 import com.example.pojo.Result;
 import com.example.service.EnergyConsumptionRecordService;

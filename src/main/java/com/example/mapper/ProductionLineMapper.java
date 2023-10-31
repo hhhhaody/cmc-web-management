@@ -52,4 +52,7 @@ public interface ProductionLineMapper {
     String getStationById(Integer productionLine);
 
     List<Value> search(String section, String station, String field);
+
+    @Select("select id from production_line where section = #{section}")
+    List<Long> getSectionIdsBySectionName(String section);
 }
