@@ -4,6 +4,7 @@ import com.example.pojo.Facility;
 import com.example.pojo.Value;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -32,7 +33,7 @@ public interface FacilityMapper {
     void insert(Facility facility);
 
 
-    List<Facility> list(String name, String spec, String section, String status, String supplier);
+    List<Facility> list(String name, String spec, String section, String status, String supplier, Boolean dailyMaintenance);
 
     @Delete("delete from facility where id = #{facility_id}")
     void deleteById(Integer facility_id);
@@ -45,8 +46,14 @@ public interface FacilityMapper {
     @Update("update facility set status = #{status} where id = #{facility_id}")
     void updateStatus(Integer facility_id, String status);
 
-    List<Value> search(String name, String spec, String section, String serialNo, String field);
+    List<Value> search(String name, String spec, String section, String serialNo, String field, String status);
 
     @Select("select * from facility where serialNo = #{serialNo}")
     Facility getBySerialNo(String serialNo);
+
+    @Update("update facility set status = #{status} where serialNo = #{serialNo}")
+    void updateStatusBySerialNo(String serialNo, String status);
+
+    @Update("update facility set prevDailyTime = #{now} where serialNo = #{serialNo}")
+    void updateDailyTime(String serialNo, LocalDateTime now);
 }

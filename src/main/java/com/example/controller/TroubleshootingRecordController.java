@@ -80,4 +80,28 @@ public class TroubleshootingRecordController {
         troubleshootingRecordService.insert(troubleshootingRecord);
         return Result.success();
     }
+
+    /**
+     * 根据id查询故障维修记录
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result getById(@PathVariable Integer id){
+        log.info("根据id查询故障维修记录， id：{}",id);
+        TroubleshootingRecord troubleshootingRecord = troubleshootingRecordService.getById(id);
+        return Result.success(troubleshootingRecord);
+    }
+
+    /**
+     * 根据id更新故障维修记录
+     * @param troubleshootingRecord
+     * @return
+     */
+    @PutMapping()
+    public Result update(@RequestBody TroubleshootingRecord troubleshootingRecord){
+        log.info("更新故障维修记录");
+        troubleshootingRecordService.update(troubleshootingRecord);
+        return Result.success();
+    }
 }

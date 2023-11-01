@@ -65,6 +65,9 @@
         <if test="status != null and status != ''">
                 and status like concat('%', #{status}, '%')
             </if>
+            <if test="dailyMaintenance != null and dailyMaintenance != ''">
+                and dailyMaintenance = #{dailyMaintenance}
+            </if>
         <if test="supplier != null and supplier != ''">
                 and supplier like concat('%', #{supplier}, '%')
             </if>
@@ -74,7 +77,6 @@
     <select id="search" resultType="com.example.pojo.Value">
         select distinct ${field} as value from facility
         <where>
-            status = '正常使用'
             <if test="name != null and name != ''">
                 and name = #{name}
             </if>
@@ -86,6 +88,9 @@
             </if>
             <if test="serialNo != null and serialNo != ''">
                 and serialNo = #{serialNo}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
             </if>
         </where>
         order by value

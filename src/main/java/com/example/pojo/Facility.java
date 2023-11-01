@@ -28,4 +28,5 @@ public class Facility {
     private String attachment;
     private Integer batch;
     private Integer batchSame;
+    private LocalDateTime prevDailyTime;
 }

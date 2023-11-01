@@ -15,4 +15,8 @@ public interface TroubleshootingRecordService {
     List<Value> search(TroubleshootingRecord troubleshootingRecord, String field);
 
     void insert(TroubleshootingRecord troubleshootingRecord);
+
+    TroubleshootingRecord getById(Integer troubleshootingRecord_id);
+
+    void update(TroubleshootingRecord troubleshootingRecord);
 }

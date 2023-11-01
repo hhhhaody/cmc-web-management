@@ -67,9 +67,9 @@ public class FacilityController {
     @GetMapping
     public Result page(@RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer pageSize,
-                       String name,String spec, String section, String status, String supplier){
-        log.info("分页查询，参数：{},{},{},{},{},{},{}",page,pageSize,name,spec,section,status,supplier);
-        PageBean pageBean = facilityService.page(page,pageSize,name,spec,section,status,supplier);
+                       String name,String spec, String section, String status, String supplier, Boolean dailyMaintenance){
+        log.info("分页查询，参数：{},{},{},{},{},{},{},{}",page,pageSize,name,spec,section,status,supplier,dailyMaintenance);
+        PageBean pageBean = facilityService.page(page,pageSize,name,spec,section,status,supplier,dailyMaintenance);
         return Result.success(pageBean);
     }
 
@@ -122,5 +122,16 @@ public class FacilityController {
         return Result.success();
     }
 
+    /**
+     * 根据serialNo更新设备前一次日常维护日期
+     * @param serialNo
+     * @return
+     */
+    @PutMapping("/daily/{serialNo}")
+    public Result updateDailyTime(@PathVariable String serialNo){
+        log.info("更新设备日常维护时间");
+        facilityService.updateDailyTime(serialNo);
+        return Result.success();
+    }
 
 }

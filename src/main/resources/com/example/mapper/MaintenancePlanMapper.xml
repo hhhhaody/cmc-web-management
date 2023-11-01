@@ -2,12 +2,12 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.mapper.TroubleshootingRecordMapper">
+<mapper namespace="com.example.mapper.MaintenancePlanMapper">
     <update id="update">
-        update troubleshooting_record
+        update maintenance_plan
         <set>
-            <if test="repairman != null and repairman != ''">
-                repairman = #{repairman},
+            <if test="maintenanceman != null and maintenanceman != ''">
+                maintenanceman = #{maintenanceman},
             </if>
             <if test="status != null and status != ''">
                 status = #{status},
@@ -21,13 +21,15 @@
         </set>
         where id = #{id}
     </update>
-
-    <select id="list" resultType="com.example.pojo.TroubleshootingRecord">
+    <select id="list" resultType="com.example.pojo.MaintenancePlan">
         select *
-        from troubleshooting_record
+        from maintenance_plan
         <where>
             <if test="section != null and section != ''">
                 section = #{section}
+            </if>
+            <if test="start != null and end != null">
+                and plannedTime between #{start} and #{end}
             </if>
             <if test="status != null and status != ''">
                 status = #{status}
@@ -38,13 +40,10 @@
             <if test="spec != null and spec != ''">
                 and spec like concat('%', #{spec}, '%')
             </if>
-            <if test="repairman != null and repairman != ''">
-                and repairman like concat('%', #{repairman}, '%')
-            </if>
-            <if test="completeTimeStart != null and completeTimeEnd != null">
-                and completeTime between #{completeTimeStart} and #{completeTimeEnd}
+            <if test="maintenanceman != null and maintenanceman != ''">
+                and maintenanceman like concat('%', #{maintenanceman}, '%')
             </if>
         </where>
-        Order by errorTime desc
+        Order by plannedTime
     </select>
 </mapper>

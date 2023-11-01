@@ -19,4 +19,10 @@ public interface TroubleshootingRecordMapper {
     @Insert("insert into troubleshooting_record(name, spec, section,station,serialNo,error,errorTime,completeTime,repairman,info,status) VALUES " +
             "(#{name}, #{spec}, #{section},#{station},#{serialNo}, #{error}, #{errorTime},#{completeTime},#{repairman}, #{info},#{status})")
     void insert(TroubleshootingRecord troubleshootingRecord);
+
+    
+    @Select("select * from troubleshooting_record where id = #{troubleshootingRecord_id}")
+    TroubleshootingRecord getById(Integer troubleshootingRecord_id);
+
+    void update(TroubleshootingRecord troubleshootingRecord);
 }

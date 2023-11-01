@@ -13,7 +13,7 @@ public interface FacilityService {
 
     void insert(Facility facility);
 
-    PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String supplier);
+    PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String supplier, Boolean dailyMaintenance);
 
     void deleteById(Integer facility_id);
 
@@ -22,4 +22,6 @@ public interface FacilityService {
     void update(Facility facility);
 
     void updateStatus(Integer facility_id);
+
+    void updateDailyTime(String serialNo);
 }
