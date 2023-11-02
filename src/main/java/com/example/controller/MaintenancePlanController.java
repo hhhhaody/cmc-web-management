@@ -110,7 +110,7 @@ public class MaintenancePlanController {
     @PutMapping("/{id}")
     public Result updateStatus(@PathVariable Integer id){
         log.info("根据id查询设备信息， id：{}",id);
-        maintenancePlanService.updateOngoingStatus(id);
-        return Result.success();
+        String msg = maintenancePlanService.updateOngoingStatus(id);
+        return Result.success(msg);
     }
 }

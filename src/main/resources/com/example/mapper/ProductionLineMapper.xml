@@ -6,7 +6,7 @@
     <select id="search" resultType="com.example.pojo.Value">
         select distinct ${field} as value from production_line
         <where>
-            <if test="station != null and station != ''">
+            <if test="station != null and station != '' and ">
                 station = #{station}
             </if>
             <if test="section != null and section != ''">

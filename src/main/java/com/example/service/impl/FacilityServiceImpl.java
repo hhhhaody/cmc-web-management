@@ -89,7 +89,7 @@ public class FacilityServiceImpl implements FacilityService {
         maintenancePlan2.setSection(facility.getSection());
         maintenancePlan2.setStation(facility.getStation());
         maintenancePlan2.setSerialNo(facility.getSerialNo());
-        maintenancePlan2.setType("一级保养");
+        maintenancePlan2.setType("二级保养");
         maintenancePlan2.setStatus("待完成");
         maintenancePlan2.setOngoing(false);
         if(secondLevelMaintenance.endsWith("月")){

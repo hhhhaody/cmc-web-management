@@ -20,5 +20,5 @@ public interface MaintenancePlanService {
 
     void update(MaintenancePlan maintenancePlan);
 
-    void updateOngoingStatus(Integer id);
+    String updateOngoingStatus(Integer id);
 }

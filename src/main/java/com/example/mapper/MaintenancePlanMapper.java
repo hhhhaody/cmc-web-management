@@ -14,7 +14,7 @@ import java.util.List;
 
 @Mapper
 public interface MaintenancePlanMapper {
-    List<MaintenancePlan> list(String section, String name, String spec, String status, String maintenanceman, LocalDate start, LocalDate end);
+    List<MaintenancePlan> list(String section, String name, String spec, String status, String maintenanceman, LocalDate start, LocalDateTime end);
 
     @Select("select distinct ${field} as value from maintenance_plan order by value")
     List<Value> searchField(String field);

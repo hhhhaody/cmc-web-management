@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -35,7 +36,12 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
         if(plannedTime != null){
             LocalDate start = plannedTime.toLocalDate();
-            LocalDate end = start.plusDays(1);
+//            LocalDate end = start.plusDays(1);
+
+
+            // 设置时间为 23:59:59
+//            LocalDateTime end = LocalDateTime.from(start).with(LocalTime.of(23, 59, 59));
+            LocalDateTime end = start.atTime(LocalTime.of(23, 59, 59));
             List<MaintenancePlan> maintenancePlanList = maintenancePlanMapper.list(section, name, spec, status, maintenanceman,start,end);
             Page<MaintenancePlan> p = (Page<MaintenancePlan>) maintenancePlanList;
             PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
@@ -166,11 +172,15 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
     @Transactional
     @Override
-    public void updateOngoingStatus(Integer id) {
-        //更新设备维护记录onging状态
-        maintenancePlanMapper.updateOngoingStatus(id);
+    public String updateOngoingStatus(Integer id) {
 
         Facility facility = facilityMapper.getBySerialNo(maintenancePlanMapper.getById(id).getSerialNo());
+        if(facility.getStatus().equals("检修维护")){
+            return "设备已在检修中";
+        }
+
+        //更新设备维护记录onging状态
+        maintenancePlanMapper.updateOngoingStatus(id);
 
         //更新设备状态记录表
         FacilityStatus facilityStatus = new FacilityStatus();
@@ -186,6 +196,6 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
         //更新设备状态
         facilityMapper.updateStatusBySerialNo(maintenancePlanMapper.getById(id).getSerialNo(),"检修维护");
-
+        return "更新成功";
     }
 }
