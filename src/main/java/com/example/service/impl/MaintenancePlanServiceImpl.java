@@ -30,22 +30,34 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
     @Transactional
     @Override
-    public PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String maintenanceman, LocalDateTime plannedTime) {
+    public PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String maintenanceman, LocalDateTime plannedTime, String calendar) {
         //TODO: 删减相同设备多余一级/二级保养
         PageHelper.startPage(page, pageSize);
 
         if(plannedTime != null){
-            LocalDate start = plannedTime.toLocalDate();
+            if(calendar != null){
+                LocalDate cur = plannedTime.toLocalDate();
+                LocalDate start = cur.minusMonths(1);
+
+                LocalDateTime end = cur.plusMonths(1).atTime(LocalTime.of(23, 59, 59));
+                List<MaintenancePlan> maintenancePlanList = maintenancePlanMapper.list(section, name, spec, status, maintenanceman,start,end);
+                Page<MaintenancePlan> p = (Page<MaintenancePlan>) maintenancePlanList;
+                PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+                return pageBean;
+            }
+            else{
+                LocalDate start = plannedTime.toLocalDate();
 //            LocalDate end = start.plusDays(1);
 
 
-            // 设置时间为 23:59:59
+                // 设置时间为 23:59:59
 //            LocalDateTime end = LocalDateTime.from(start).with(LocalTime.of(23, 59, 59));
-            LocalDateTime end = start.atTime(LocalTime.of(23, 59, 59));
-            List<MaintenancePlan> maintenancePlanList = maintenancePlanMapper.list(section, name, spec, status, maintenanceman,start,end);
-            Page<MaintenancePlan> p = (Page<MaintenancePlan>) maintenancePlanList;
-            PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
-            return pageBean;
+                LocalDateTime end = start.atTime(LocalTime.of(23, 59, 59));
+                List<MaintenancePlan> maintenancePlanList = maintenancePlanMapper.list(section, name, spec, status, maintenanceman,start,end);
+                Page<MaintenancePlan> p = (Page<MaintenancePlan>) maintenancePlanList;
+                PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+                return pageBean;
+            }
 
         }
         else{

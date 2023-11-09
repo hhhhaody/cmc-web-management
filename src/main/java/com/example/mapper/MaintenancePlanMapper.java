@@ -16,7 +16,7 @@ import java.util.List;
 public interface MaintenancePlanMapper {
     List<MaintenancePlan> list(String section, String name, String spec, String status, String maintenanceman, LocalDate start, LocalDateTime end);
 
-    @Select("select distinct ${field} as value from maintenance_plan order by value")
+    @Select("select distinct ${field} as value from maintenance_plan where ${field} is not null order by value")
     List<Value> searchField(String field);
 
     @Insert("insert into maintenance_plan(name, spec, section,station,serialNo,type,plannedTime,completeTime,maintenanceman,info,status,ongoing) VALUES " +

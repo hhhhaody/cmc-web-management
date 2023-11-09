@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MaintenancePlanService {
-    PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String maintenanceman, LocalDateTime plannedTime);
+    PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String maintenanceman, LocalDateTime plannedTime, String calendar);
 
     List<Value> searchField(String field);
 

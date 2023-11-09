@@ -94,10 +94,11 @@ public class DeviceFileController {
     }
 
     // 根据用户输入的部分信息提供搜索建议
+    // 搜索文件名
     @PostMapping("/search/{field}")
-    public Result searchSuggestion(@RequestBody Object entity, @PathVariable String field) {
-        log.info("根据用户已输入信息查询已有数据：{},{}", entity, field);
-        List<Value> res = deviceFileService.searchByField(entity, field);
+    public Result searchSuggestion(@RequestBody DeviceFile deviceFile, @PathVariable String field) {
+        log.info("根据用户已输入信息查询已有数据：{},{}", deviceFile, field);
+        List<Value> res = deviceFileService.searchByField(deviceFile, field);
         return Result.success(res);
     }
 

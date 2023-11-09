@@ -206,21 +206,23 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 根据实体类型（文件夹或文件）和指定字段查询已有数据。
-     * @param entity 实体对象（可以是文件夹或文件）
+     * @param DeviceFile 实体对象（可以是文件夹或文件）
      * @param field 要查询的字段名称
      * @return 字段的唯一值列表
      */
     @Override
-    public List<Value> searchByField(Object entity, String field) {
-        if (entity instanceof DeviceFileFolder) {
-            DeviceFileFolder deviceFileFolder = (DeviceFileFolder) entity;
-            return deviceFileFolderMapper.searchByField(deviceFileFolder.getFolderName(), camelToSnake(field));
-        } else if (entity instanceof DeviceFile) {
-            DeviceFile deviceFile = (DeviceFile) entity;
-            return deviceFileMapper.searchByFieldFile(deviceFile.getFileName(), camelToSnake(field));
-        } else {
-            throw new IllegalArgumentException("Invalid entity type: " + entity.getClass().getSimpleName());
-        }
+    public List<Value> searchByField(DeviceFile deviceFile, String field) {
+//        if (entity instanceof DeviceFileFolder) {
+//            DeviceFileFolder deviceFileFolder = (DeviceFileFolder) entity;
+//            return deviceFileFolderMapper.searchByField(deviceFileFolder.getFolderName(), camelToSnake(field));
+//        } else if (entity instanceof DeviceFile) {
+//            DeviceFile deviceFile = (DeviceFile) entity;
+//            return deviceFileMapper.searchByFieldFile(deviceFile.getFileName(), camelToSnake(field));
+//        } else {
+//            throw new IllegalArgumentException("Invalid entity type: " + entity.getClass().getSimpleName());
+//        }
+        String fileName = deviceFile.getFileName();
+        return deviceFileMapper.searchByFieldFile(fileName,field);
     }
 
     /**

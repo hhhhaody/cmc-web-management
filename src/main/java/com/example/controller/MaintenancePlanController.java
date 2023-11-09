@@ -18,7 +18,7 @@ public class MaintenancePlanController {
     private MaintenancePlanService maintenancePlanService;
 
     /**
-     * 设备维保记录查询
+     * 维护计划查询
      * @param page
      * @param pageSize
      * @param name
@@ -26,15 +26,19 @@ public class MaintenancePlanController {
      * @param section
      * @param status
      * @param maintenanceman
+     * @param plannedTime 如提供，需根据calendar参数查询
+     * @param calendar 如果是日历页，param为true，则查询plannedTime日期月所有维护计划
+     *                 param为null则查询palnnedTime日期当日维护计划
      * @return
      */
     @GetMapping
     public Result page(@RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer pageSize,
                        String name, String spec, String section, String status,
-                       String maintenanceman,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime plannedTime){
-        log.info("分页查询，参数：{},{},{},{},{},{},{}",page,pageSize,name,spec,section,status,maintenanceman,plannedTime);
-        PageBean pageBean = maintenancePlanService.page(page,pageSize,name,spec,section,status,maintenanceman,plannedTime);
+                       String maintenanceman,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime plannedTime,
+                       String calendar){
+        log.info("分页查询，参数：{},{},{},{},{},{},{}",page,pageSize,name,spec,section,status,maintenanceman,plannedTime,calendar);
+        PageBean pageBean = maintenancePlanService.page(page,pageSize,name,spec,section,status,maintenanceman,plannedTime,calendar);
         return Result.success(pageBean);
     }
 

@@ -68,7 +68,7 @@ public interface DeviceFileMapper {
     List<Value> searchFieldFile(@Param("field") String field);
 
     // 根据文件名和字段名，查询tbl_files表中某个字段的唯一值。
-    @Select("select distinct ${field} as value from tbl_files where file_name like CONCAT('%',#{file_name},'%') order by value")
+    @Select("select distinct ${field} as value from tbl_files where file_name like CONCAT('%',#{fileName},'%') order by value")
     List<Value> searchByFieldFile(@Param("fileName") String fileName, @Param("field") String field);
 }
 

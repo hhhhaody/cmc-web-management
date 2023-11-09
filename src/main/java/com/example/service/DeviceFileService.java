@@ -59,11 +59,11 @@ public interface DeviceFileService {
 
     /**
      * 根据给定的实体和字段名查询唯一值。
-     * @param entity 要查询的实体（可以是DeviceFileFolder或DeviceFile）。
+     * @param deviceFile 要查询的实体（可以是DeviceFileFolder或DeviceFile）。
      * @param field 要查询的字段名。
      * @return 唯一值的列表。
      */
-    List<Value> searchByField(Object entity, String field);
+    List<Value> searchByField(DeviceFile deviceFile, String field);
 
     /**
      * 根据字段名查询文件夹中的唯一值。
