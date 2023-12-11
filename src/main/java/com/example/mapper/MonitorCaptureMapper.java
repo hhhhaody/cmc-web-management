@@ -15,6 +15,7 @@ public interface MonitorCaptureMapper {
             "<if test='captureTimeStart != null'>AND capture_time &gt;= #{captureTimeStart}</if>",
             "<if test='captureTimeEnd != null'>AND capture_time &lt;= #{captureTimeEnd}</if>",
             "</where>",
+            "ORDER BY capture_time DESC",
             "</script>"})
     List<MonitorCapture> list(LocalDate captureTimeStart, LocalDate captureTimeEnd);
 }

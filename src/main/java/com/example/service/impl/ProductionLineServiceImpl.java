@@ -56,6 +56,11 @@ public class ProductionLineServiceImpl implements ProductionLineService {
         productionLineMapper.updateSectionName(section,newName);
     }
 
+    @Override
+    public List<Long> getSectionIdsBySectionName(String sectionName) {
+        return productionLineMapper.getSectionIdsBySectionName(sectionName);
+    }
+
     @Transactional
     @Override
     public void updateStations(ProductionLine productionLine) {

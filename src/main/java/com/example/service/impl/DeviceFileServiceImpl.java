@@ -5,12 +5,19 @@ import com.example.mapper.DeviceFileMapper;
 import com.example.mapper.DeviceFileOperationMapper;
 import com.example.pojo.*;
 import com.example.service.DeviceFileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DeviceFileServiceImpl implements DeviceFileService {
     @Autowired
@@ -24,6 +31,7 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 创建一个新的文件夹。
+     *
      * @param folderName 文件夹名称
      */
     @Override
@@ -34,11 +42,15 @@ public class DeviceFileServiceImpl implements DeviceFileService {
         folder.setUpdatedAt(new Date());
         deviceFileFolderMapper.insert(folder);
 
+        log.info("Folder created: id={}, name={}, createdAt={}, updatedAt={}",
+                folder.getFolderId(), folder.getFolderName(), folder.getCreatedAt(), folder.getUpdatedAt());
+
         logOperation("CREATE", "FOLDER", folder.getFolderId());
     }
 
     /**
      * 上传文件。如果文件名已存在，将自动重命名文件。
+     *
      * @param folderId 文件夹ID
      * @param fileName 文件名
      * @param fileSize 文件大小
@@ -46,17 +58,17 @@ public class DeviceFileServiceImpl implements DeviceFileService {
      */
     @Override
     public String uploadFile(Long folderId, String fileName, Long fileSize) {
-//        String originalFilename = fileName;
-        int count = deviceFileMapper.checkFileNameExists(fileName);
-        int suffix = 1;
-        String baseName = removeFileExtension(fileName); // 移除文件扩展名
-        String fileExtension = getFileExtension(fileName); // 获取文件扩展名
+        try {
+            // 对文件名进行解码
+            fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            log.error("Error decoding file name: " + fileName, e);
+        }
 
-        // 如果文件名已存在，为其添加后缀
-        while (count > 0) {
-            fileName = baseName + "(" + suffix + ")" + fileExtension; // 插入递增数字
-            count = deviceFileMapper.checkFileNameExists(fileName);
-            suffix++;
+        int count = deviceFileMapper.checkFileNameExists(fileName);
+        // 如果文件名已存在，返回一个特定的响应
+        if (count > 0) {
+            return "文件名重复";
         }
         DeviceFile file = new DeviceFile();
         file.setFolderId(folderId);
@@ -67,7 +79,7 @@ public class DeviceFileServiceImpl implements DeviceFileService {
         deviceFileMapper.insert(file);
 
         logOperation("UPLOAD", "FILE", file.getFileId());
-        return fileName;  // 返回新的文件名
+        return fileName;
     }
 
     // 移除文件扩展名的辅助函数
@@ -90,21 +102,35 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 重命名文件或文件夹。如果是文件并且文件名已存在，则自动重命名文件。
+     *
      * @param itemType 文件或文件夹
-     * @param itemId 文件或文件夹ID
-     * @param newName 新名称
+     * @param itemId   文件或文件夹ID
+     * @param newName  新名称
      * @return 新的名称
      */
     @Override
     public String renameItem(String itemType, Long itemId, String newName) {
+        try {
+            // 对新名称进行解码
+            newName = URLDecoder.decode(newName, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            log.error("Error decoding new name: " + newName, e);
+        }
+
         if ("FOLDER".equals(itemType)) {
-            DeviceFileFolder folder = new DeviceFileFolder();
-            folder.setFolderId(itemId);
+            DeviceFileFolder folder = deviceFileFolderMapper.findById(itemId); // 新增：根据ID获取文件夹信息
+            if (folder == null) {
+                throw new IllegalArgumentException("Folder not found with ID: " + itemId);
+            }
             folder.setFolderName(newName);
-            folder.setUpdatedAt(new Date());
+            folder.setUpdatedAt(new Date()); // 只更新updatedAt字段
             deviceFileFolderMapper.update(folder);
         } else {
-//            String originalFilename = newName;
+            DeviceFile file = deviceFileMapper.findById(itemId); // 新增：根据ID获取文件信息
+            if (file == null) {
+                throw new IllegalArgumentException("File not found with ID: " + itemId);
+            }
+
             int count = deviceFileMapper.checkFileNameExists(newName);
             int suffix = 1;
             String baseName = removeFileExtension(newName);
@@ -116,21 +142,20 @@ public class DeviceFileServiceImpl implements DeviceFileService {
                 suffix++;
             }
 
-            DeviceFile file = new DeviceFile();
-            file.setFileId(itemId);
             file.setFileName(newName);
-            file.setUpdatedAt(new Date());
+            file.setUpdatedAt(new Date()); // 只更新updatedAt字段
             deviceFileMapper.update(file);
         }
 
         logOperation("RENAME", itemType, itemId);
-        return newName;  // 返回新的文件名
+        return newName;
     }
 
     /**
      * 删除文件或文件夹。
+     *
      * @param itemType 文件或文件夹
-     * @param itemId 文件或文件夹ID
+     * @param itemId   文件或文件夹ID
      * @return 操作结果
      */
     @Override
@@ -151,8 +176,9 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 获取文件夹的分页列表。
-     * @param keyword 搜索关键字
-     * @param page 页码
+     *
+     * @param keyword  搜索关键字
+     * @param page     页码
      * @param pageSize 每页数量
      * @return 分页数据
      */
@@ -169,10 +195,11 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 根据文件夹ID和关键字，获取文件的分页列表。
+     *
      * @param folderId 文件夹ID
-     * @param page 页码
+     * @param page     页码
      * @param pageSize 每页数量
-     * @param keyword 搜索关键字
+     * @param keyword  搜索关键字
      * @return 分页数据
      */
     @Override
@@ -206,8 +233,9 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 根据实体类型（文件夹或文件）和指定字段查询已有数据。
+     *
      * @param DeviceFile 实体对象（可以是文件夹或文件）
-     * @param field 要查询的字段名称
+     * @param field      要查询的字段名称
      * @return 字段的唯一值列表
      */
     @Override
@@ -222,11 +250,12 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 //            throw new IllegalArgumentException("Invalid entity type: " + entity.getClass().getSimpleName());
 //        }
         String fileName = deviceFile.getFileName();
-        return deviceFileMapper.searchByFieldFile(fileName,field);
+        return deviceFileMapper.searchByFieldFile(fileName, field);
     }
 
     /**
      * 查询文件夹表中指定字段的已有数据。
+     *
      * @param field 要查询的字段名称
      * @return 字段的唯一值列表
      */
@@ -237,6 +266,7 @@ public class DeviceFileServiceImpl implements DeviceFileService {
 
     /**
      * 查询文件表中指定字段的已有数据。
+     *
      * @param field 要查询的字段名称
      * @return 字段的唯一值列表
      */
@@ -248,6 +278,7 @@ public class DeviceFileServiceImpl implements DeviceFileService {
     /**
      * 将驼峰命名的字符串转换为下划线命名。
      * 例如：camelToSnake("helloWorld") 返回 "hello_world"
+     *
      * @param str 要转换的驼峰命名的字符串
      * @return 转换后的下划线命名的字符串
      */

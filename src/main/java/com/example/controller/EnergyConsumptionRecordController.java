@@ -51,6 +51,25 @@ public class EnergyConsumptionRecordController {
         return Result.success(new PageBean(total, records));
     }
 
+    @GetMapping("/firstRecords")
+    public Result getFirstRecordsByStationName(@RequestParam String sectionName,
+                                               @RequestParam(required=false) @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+                                               @RequestParam(required=false) @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
+                                               @RequestParam int page,
+                                               @RequestParam int pageSize) {
+        List<Long> sectionId = productionLineMapper.getSectionIdsBySectionName(sectionName);
+
+        // 当sectionId为空时，返回错误信息
+        if (sectionId == null) {
+            return Result.error("No matching section ID found for the given station name.");
+        }
+
+        int offset = (page - 1) * pageSize;
+        List<EnergyConsumptionRecord> firstRecords = mapper.selectFirstRecordByDate(sectionId, startDate, endDate, offset, pageSize);
+        Long total = mapper.countFirstRecordByDate(sectionId, startDate, endDate);
+        return Result.success(new PageBean(total, firstRecords));
+    }
+
 
     /**
      * 功能描述: 根据收到的电流和电压数据，计算功率和能耗，并存储。
@@ -100,8 +119,6 @@ public class EnergyConsumptionRecordController {
         int result = mapper.insert(record);
         return result == 1 ? Result.success() : Result.error("Insertion failed");
     }
-
-
 
     @PutMapping("/record")
     public Result updateRecord(@RequestBody EnergyConsumptionRecord record) {
