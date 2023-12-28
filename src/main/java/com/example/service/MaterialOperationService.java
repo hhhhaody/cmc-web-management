@@ -23,4 +23,6 @@ public interface MaterialOperationService {
     void deleteById(Integer id);
 
     void update(MaterialOperation materialOperation);
+
+    List<Value> searchAdvance(MaterialOperation materialOperation, String field);
 }

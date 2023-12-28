@@ -23,4 +23,6 @@ public interface ProductOperationService {
     void deleteById(Integer id);
 
     void update(ProductOperation productOperation);
+
+    List<Value> searchAdvance(ProductOperation productOperation, String field);
 }

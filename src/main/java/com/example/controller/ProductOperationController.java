@@ -27,7 +27,7 @@ public class ProductOperationController {
     public Result insert(@RequestBody ProductOperation productOperation){
         log.info("产品操作：{}",productOperation);
         String batch = productOperationService.insert(productOperation);
-        return Result.success(batch+"成功"+productOperation.getOperation()+productOperation.getAmount().toString()+productOperation.getQuality());
+        return Result.success(productOperation.getName()+ productOperation.getSpec()+"成功"+productOperation.getOperation()+productOperation.getAmount().toString()+productOperation.getQuality());
     }
 
     @GetMapping
@@ -51,6 +51,14 @@ public class ProductOperationController {
         log.info("根据field查询已有数据：{}",field);
 
         List<Value> res =  productOperationService.searchField(field);
+        return Result.success(res);
+    }
+
+    @PostMapping("/searchAdvance/{field}")
+    public Result searchAdvanceSuggestion(@RequestBody ProductOperation productOperation, @PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",productOperation,field);
+
+        List<Value> res =  productOperationService.searchAdvance(productOperation,field);
         return Result.success(res);
     }
 

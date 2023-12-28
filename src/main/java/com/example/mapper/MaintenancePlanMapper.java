@@ -3,10 +3,7 @@ package com.example.mapper;
 import com.example.pojo.MaintenancePlan;
 import com.example.pojo.TroubleshootingRecord;
 import com.example.pojo.Value;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,4 +27,8 @@ public interface MaintenancePlanMapper {
     void updateOngoingStatus(Integer id);
 
     void update(MaintenancePlan maintenancePlan);
+
+    @Delete("delete from maintenance_plan where name = #{name} and spec = #{spec} and section = #{section} and station = #{station} " +
+            "and serialNo = #{serialNo} and type = #{type} and status = '待完成'")
+    void delete(MaintenancePlan maintenancePlan);
 }

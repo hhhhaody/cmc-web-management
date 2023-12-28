@@ -50,7 +50,7 @@ public class FacilityController {
     public Result insert(@RequestBody Facility facility){
         log.info("新增设备:{}",facility);
         facilityService.insert(facility);
-        return Result.success();
+        return Result.success("新增成功");
     }
 
     /**
@@ -119,7 +119,7 @@ public class FacilityController {
     public Result update(@RequestBody Facility facility){
         log.info("更新设备信息");
         facilityService.update(facility);
-        return Result.success();
+        return Result.success("更新成功");
     }
 
     /**

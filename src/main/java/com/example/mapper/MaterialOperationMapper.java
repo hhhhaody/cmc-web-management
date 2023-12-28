@@ -50,4 +50,14 @@ public interface MaterialOperationMapper {
      * @return
      */
     MaterialOperation getByBatchReturned(String decode);
+
+    /**
+     * 更新此批次号生产日期
+     * @param batch
+     * @param supplyTime
+     */
+    @Update("update material_operation set supplyTime = #{supplyTime} where batch = #{batch} ")
+    void updateSupplyTime(String batch, LocalDateTime supplyTime);
+
+    List<Value> searchAdvance(String name, String spec, String operation, String supplier, String operator, String field);
 }

@@ -78,7 +78,7 @@ public class TroubleshootingRecordController {
     public Result insert(@RequestBody TroubleshootingRecord troubleshootingRecord){
         log.info("故障维修记录：{}",troubleshootingRecord);
         troubleshootingRecordService.insert(troubleshootingRecord);
-        return Result.success();
+        return Result.success("新增成功");
     }
 
     /**
@@ -102,6 +102,6 @@ public class TroubleshootingRecordController {
     public Result update(@RequestBody TroubleshootingRecord troubleshootingRecord){
         log.info("更新故障维修记录");
         troubleshootingRecordService.update(troubleshootingRecord);
-        return Result.success();
+        return Result.success("记录成功");
     }
 }

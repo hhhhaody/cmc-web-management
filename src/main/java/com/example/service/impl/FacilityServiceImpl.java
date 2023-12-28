@@ -79,8 +79,9 @@ public class FacilityServiceImpl implements FacilityService {
         maintenancePlan1.setOngoing(false);
         if(firstLevelMaintenance.endsWith("月")){
             maintenancePlan1.setPlannedTime(start.plusMonths(first));
-        }
-        else{
+        } else if (firstLevelMaintenance.endsWith("周")) {
+            maintenancePlan1.setPlannedTime(start.plusWeeks(first));
+        } else{
             maintenancePlan1.setPlannedTime(start.plusYears(first));
         }
 
@@ -94,6 +95,9 @@ public class FacilityServiceImpl implements FacilityService {
         maintenancePlan2.setOngoing(false);
         if(secondLevelMaintenance.endsWith("月")){
             maintenancePlan2.setPlannedTime(start.plusMonths(second));
+        }
+        else if(secondLevelMaintenance.endsWith("周")){
+            maintenancePlan2.setPlannedTime(start.plusWeeks(second));
         }
         else{
             maintenancePlan2.setPlannedTime(start.plusYears(second));
@@ -126,6 +130,9 @@ public class FacilityServiceImpl implements FacilityService {
 
     @Override
     public void update(Facility facility) {
+        if(facility.getPrevMaintenanceman()!=null && facility.getPrevInfo()!=null){
+            facility.setPrevDailyTime(LocalDateTime.now());
+        }
         facilityMapper.update(facility);
     }
 

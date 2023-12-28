@@ -102,7 +102,13 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
     @Override
     public void update(MaintenancePlan maintenancePlan) {
         Facility facility = facilityMapper.getBySerialNo(maintenancePlan.getSerialNo());
-        //补充故障维修记录表
+
+        if(maintenancePlan.getStatus().equals("已完成") || maintenancePlan.getStatus().equals("逾期完成")){
+            facilityStatusMapper.deleteByTime(maintenancePlan.getUpdateTime());
+            //删除上次新增的维保计划
+            maintenancePlanMapper.delete(maintenancePlan);
+        }
+        //补充设备维护表
         maintenancePlan.setStation(facility.getStation());
         LocalDateTime completeTime = maintenancePlan.getCompleteTime();
         LocalDateTime plannedTime = maintenancePlan.getPlannedTime();
@@ -113,6 +119,9 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
             maintenancePlan.setStatus("逾期完成");
         }
 
+        LocalDateTime now = LocalDateTime.now();
+
+
         //更新设备状态记录表
         FacilityStatus facilityStatus = new FacilityStatus();
         facilityStatus.setName(maintenancePlan.getName());
@@ -120,7 +129,7 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
         facilityStatus.setStation(maintenancePlan.getStation());
         facilityStatus.setSection(maintenancePlan.getSection());
         facilityStatus.setSerialNo(maintenancePlan.getSerialNo());
-        facilityStatus.setUpdateTime(completeTime);
+        facilityStatus.setUpdateTime(now);
         facilityStatus.setBeforeStatus("检修维护");
         facilityStatus.setAfterStatus("正常使用");
 
@@ -128,6 +137,8 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
         facilityMapper.updateStatusBySerialNo(maintenancePlan.getSerialNo(),"正常使用");
         //更新设备状态记录表
         facilityStatusMapper.insert(facilityStatus);
+
+        maintenancePlan.setUpdateTime(now);
 
         maintenancePlanMapper.update(maintenancePlan);
 
@@ -150,6 +161,9 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
             maintenancePlan1.setOngoing(false);
             if(firstLevelMaintenance.endsWith("月")){
                 maintenancePlan1.setPlannedTime(start.plusMonths(first));
+            }
+            else if (firstLevelMaintenance.endsWith("周")){
+                maintenancePlan1.setPlannedTime(start.plusWeeks(first));
             }
             else{
                 maintenancePlan1.setPlannedTime(start.plusYears(first));
@@ -174,6 +188,9 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
             maintenancePlan2.setOngoing(false);
             if(secondLevelMaintenance.endsWith("月")){
                 maintenancePlan2.setPlannedTime(start.plusMonths(second));
+            }
+            else if(secondLevelMaintenance.endsWith("周")){
+                maintenancePlan2.setPlannedTime(start.plusWeeks(second));
             }
             else{
                 maintenancePlan2.setPlannedTime(start.plusYears(second));

@@ -26,12 +26,17 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void insert(Material material) {
+        if (materialMapper.check(material)!= 1){
         Integer batch = materialMapper.getMaxBatch(material.getName());
         if(batch != null){
             material.setBatch(batch+1);
         }
         else material.setBatch(1);
         materialMapper.insert(material);
+    }
+    else{
+        throw new RuntimeException();
+    }
     }
 
     @Override

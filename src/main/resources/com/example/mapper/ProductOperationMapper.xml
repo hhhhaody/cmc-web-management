@@ -36,7 +36,7 @@
                 operation = #{operation}
             </if>
             <if test="name != null and name != ''">
-                name like concat('%', #{name}, '%')
+                and name like concat('%', #{name}, '%')
             </if>
             <if test="spec != null and spec != ''">
                 and spec like concat('%', #{spec}, '%')
@@ -93,5 +93,26 @@
         FROM product_operation AS mo
         WHERE mo.batch = #{batch}
           and operation = '入库';
+    </select>
+    <select id="searchAdvance" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from product_operation
+        <where>
+            <if test="operation != null and operation != ''">
+                operation = #{operation}
+            </if>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator like concat('%', #{operator}, '%')
+            </if>
+            <if test="quality != null and quality != ''">
+                and quality like concat('%', #{quality}, '%')
+            </if>
+        </where>
+        order by value
     </select>
 </mapper>

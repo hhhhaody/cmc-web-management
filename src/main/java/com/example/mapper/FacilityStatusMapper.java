@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.pojo.FacilityStatus;
 import com.example.pojo.Value;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,4 +20,7 @@ public interface FacilityStatusMapper {
     List<Value> searchField(String field);
 
     List<FacilityStatus> list(String section, String name, String spec, LocalDateTime updateTimeStart, LocalDateTime updateTimeEnd, String serialNo);
+
+    @Delete("delete from facility_status where updateTime = #{completeTime}")
+    void deleteByTime(LocalDateTime completeTime);
 }

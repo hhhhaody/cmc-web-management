@@ -22,4 +22,5 @@ public class TroubleshootingRecord {
     private String repairman;
     private String info;
     private String status;
+    private LocalDateTime updateTime;
 }

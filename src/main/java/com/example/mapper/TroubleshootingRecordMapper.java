@@ -16,8 +16,8 @@ public interface TroubleshootingRecordMapper {
     @Select("select distinct ${field} as value from troubleshooting_record order by value")
     List<Value> searchField(String field);
 
-    @Insert("insert into troubleshooting_record(name, spec, section,station,serialNo,error,errorTime,completeTime,repairman,info,status) VALUES " +
-            "(#{name}, #{spec}, #{section},#{station},#{serialNo}, #{error}, #{errorTime},#{completeTime},#{repairman}, #{info},#{status})")
+    @Insert("insert into troubleshooting_record(name, spec, section,station,serialNo,error,errorTime,completeTime,repairman,info,status,updateTime) VALUES " +
+            "(#{name}, #{spec}, #{section},#{station},#{serialNo}, #{error}, #{errorTime},#{completeTime},#{repairman}, #{info},#{status},#{updateTime})")
     void insert(TroubleshootingRecord troubleshootingRecord);
 
     

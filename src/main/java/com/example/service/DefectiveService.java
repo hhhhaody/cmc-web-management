@@ -14,4 +14,6 @@ public interface DefectiveService {
     List<Value> search(Defective defective, String field);
 
     Defective getByBatch(String batch);
+
+    List<Value> searchAdvance(Defective defective, String field);
 }

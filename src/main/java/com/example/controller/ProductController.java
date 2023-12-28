@@ -22,7 +22,7 @@ public class ProductController {
     public Result insert(@RequestBody Product product){
         log.info("新增产品:{}",product);
         productService.insert(product);
-        return Result.success();
+        return Result.success("新增成功");
     }
 
     /**
@@ -52,6 +52,14 @@ public class ProductController {
         log.info("根据field查询已有数据：{}",field);
 
         List<Value> res =  productService.searchField(field);
+        return Result.success(res);
+    }
+
+    @PostMapping("/searchAdvance/{field}")
+    public Result searchAdvanceSuggestion(@RequestBody Product product, @PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",product,field);
+
+        List<Value> res =  productService.search(product,field);
         return Result.success(res);
     }
 
@@ -90,7 +98,7 @@ public class ProductController {
     public Result update(@RequestBody Product product){
         log.info("更新物料信息");
         productService.update(product);
-        return Result.success();
+        return Result.success("更新成功");
     }
 
     /**

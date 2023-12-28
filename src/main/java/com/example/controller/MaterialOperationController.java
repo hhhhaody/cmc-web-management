@@ -27,7 +27,7 @@ public class MaterialOperationController {
     public Result insert(@RequestBody MaterialOperation materialOperation){
         log.info("物料操作：{}",materialOperation);
         String batch = materialOperationService.insert(materialOperation);
-        return Result.success(batch+"成功"+materialOperation.getOperation()+materialOperation.getAmount().toString());
+        return Result.success(materialOperation.getName()+materialOperation.getSpec()+"成功"+materialOperation.getOperation()+materialOperation.getAmount().toString());
     }
 
     @GetMapping
@@ -53,6 +53,15 @@ public class MaterialOperationController {
         List<Value> res =  materialOperationService.searchField(field);
         return Result.success(res);
     }
+
+    @PostMapping("/searchAdvance/{field}")
+    public Result searchAdvanceSuggestion(@RequestBody MaterialOperation materialOperation, @PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",materialOperation,field);
+
+        List<Value> res =  materialOperationService.searchAdvance(materialOperation,field);
+        return Result.success(res);
+    }
+
 
     /**
      * 弹框内搜索联想

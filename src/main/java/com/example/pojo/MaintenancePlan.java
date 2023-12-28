@@ -22,4 +22,5 @@ public class MaintenancePlan {
     private String info;
     private String status;
     private Boolean ongoing;
+    private LocalDateTime updateTime;
 }

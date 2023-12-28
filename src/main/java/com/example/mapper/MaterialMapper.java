@@ -74,4 +74,11 @@ public interface MaterialMapper {
      */
     @Select("SELECT batch FROM material where name = #{name} and spec = #{spec}")
     Integer getBatch(String name, String spec);
+
+    /**
+     * 检查当前物料是否已存在
+     * @param material
+     */
+    @Select("select count(*) from material where name=#{name} and spec = #{spec}")
+    Integer check(Material material);
 }

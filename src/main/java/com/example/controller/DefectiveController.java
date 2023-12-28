@@ -46,6 +46,14 @@ public class DefectiveController {
         return Result.success(res);
     }
 
+    @PostMapping("/searchAdvance/{field}")
+    public Result searchAdvanceSuggestion(@RequestBody Defective defective, @PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",defective,field);
+
+        List<Value> res =  defectiveService.searchAdvance(defective,field);
+        return Result.success(res);
+    }
+
     /**
      * 弹框内搜索联想
      * @param defective

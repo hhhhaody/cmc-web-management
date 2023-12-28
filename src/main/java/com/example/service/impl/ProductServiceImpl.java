@@ -121,4 +121,5 @@ public class ProductServiceImpl implements ProductService {
         //只删除了产品表
         productMapper.deleteById(product_id);
     }
+
 }

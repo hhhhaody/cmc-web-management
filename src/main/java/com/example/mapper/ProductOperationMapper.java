@@ -2,10 +2,7 @@ package com.example.mapper;
 
 import com.example.pojo.ProductOperation;
 import com.example.pojo.Value;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,4 +34,14 @@ public interface ProductOperationMapper {
     void deleteById(Integer id);
 
     void update(ProductOperation productOperation);
+
+    /**
+     * 更新此批次号生产日期
+     * @param decode
+     * @param produceTime
+     */
+    @Update("update product_operation set produceTime = #{produceTime} where batch = #{decode} ")
+    void updateProduceTime(String decode, LocalDateTime produceTime);
+
+    List<Value> searchAdvance(String name, String spec, String operation, String quality, String operator, String field);
 }

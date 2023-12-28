@@ -20,4 +20,5 @@ public interface ProductService {
     void update(Product product);
 
     void deleteById(Integer product_id);
+
 }

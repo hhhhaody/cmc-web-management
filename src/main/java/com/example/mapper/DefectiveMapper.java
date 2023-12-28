@@ -25,4 +25,6 @@ public interface DefectiveMapper {
     Defective getByBatch(String batch);
 
     void calAmount();
+
+    List<Value> searchAdvance(String name, String spec, String supplier, String field);
 }

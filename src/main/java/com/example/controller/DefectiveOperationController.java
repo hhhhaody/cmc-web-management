@@ -26,7 +26,7 @@ public class DefectiveOperationController {
     public Result insert(@RequestBody DefectiveOperation defectiveOperation){
         log.info("新增不良物料操作：{}",defectiveOperation);
         defectiveOperationService.insert(defectiveOperation);
-        return Result.success(defectiveOperation.getBatch()+"成功"+defectiveOperation.getOperation()+defectiveOperation.getAmount().toString());
+        return Result.success(defectiveOperation.getName() + defectiveOperation.getSpec()+"成功"+defectiveOperation.getOperation()+defectiveOperation.getAmount().toString());
     }
 
     /**

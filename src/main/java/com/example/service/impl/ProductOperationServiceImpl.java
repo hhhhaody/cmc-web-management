@@ -111,6 +111,33 @@ public class ProductOperationServiceImpl implements ProductOperationService {
 
     @Override
     public void update(ProductOperation productOperation) {
+        LocalDateTime original = productOperationMapper.getById(productOperation.getId()).getProduceTime();
+        LocalDateTime produceTime = productOperation.getProduceTime();
+
+        //如果供料日期变化，更新此批次所有条目中的供料日期
+        if(!original.isEqual(produceTime)){
+            String decode = null;
+            String batch =  productOperation.getBatch();
+            try {
+                decode = java.net.URLDecoder.decode(batch, "UTF-8");
+                productOperationMapper.updateProduceTime(decode,produceTime);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+//            productOperationMapper.updateSupplyTime(batch,produceTime);
+        }
         productOperationMapper.update(productOperation);
+    }
+
+    @Override
+    public List<Value> searchAdvance(ProductOperation productOperation, String field) {
+
+
+        String name = productOperation.getName();
+        String spec = productOperation.getSpec();
+        String operation = productOperation.getOperation();
+        String quality = productOperation.getQuality();
+        String operator = productOperation.getOperator();
+        return productOperationMapper.searchAdvance(name,spec,operation,quality,operator,field);
     }
 }

@@ -161,11 +161,42 @@ public class MaterialOperationServiceImpl implements MaterialOperationService {
     @Override
     @Transactional
     public void update(MaterialOperation materialOperation) {
+
+        LocalDateTime original = materialOperationMapper.getById(materialOperation.getId()).getSupplyTime();
+        LocalDateTime supplyTime = materialOperation.getSupplyTime();
+
+        //如果供料日期变化，更新此批次所有条目中的供料日期
+        if(!original.isEqual(supplyTime)){
+            String decode = null;
+            String batch =  materialOperation.getBatch();
+            try {
+                decode = java.net.URLDecoder.decode(batch, "UTF-8");
+                materialOperationMapper.updateSupplyTime(decode,supplyTime);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+//            materialOperationMapper.updateSupplyTime(batch,supplyTime);
+        }
         materialOperationMapper.update(materialOperation);
+
+
+
+
         if(materialOperation.getBatch().endsWith("F")){
             System.out.println("更新不良物料库操作");
             System.out.println("-------------------------------------------");
             defectiveOperationMapper.updateByOperateTime(materialOperation);
         }
+    }
+
+    @Override
+    public List<Value> searchAdvance(MaterialOperation materialOperation, String field) {
+        String name = materialOperation.getName();
+        String spec = materialOperation.getSpec();
+        String operation = materialOperation.getOperation();
+        String supplier = materialOperation.getSupplier();
+        String operator = materialOperation.getOperator();
+
+        return materialOperationMapper.searchAdvance(name,spec,operation,supplier,operator,field);
     }
 }

@@ -79,7 +79,7 @@ public class MaintenancePlanController {
     public Result insert(@RequestBody MaintenancePlan maintenancePlan){
         log.info("新增设备维保记录：{}",maintenancePlan);
         maintenancePlanService.insert(maintenancePlan);
-        return Result.success();
+        return Result.success("新增成功");
     }
 
     /**
@@ -103,7 +103,7 @@ public class MaintenancePlanController {
     public Result update(@RequestBody MaintenancePlan maintenancePlan){
         log.info("更新设备维保记录");
         maintenancePlanService.update(maintenancePlan);
-        return Result.success();
+        return Result.success("记录成功");
     }
 
     /**

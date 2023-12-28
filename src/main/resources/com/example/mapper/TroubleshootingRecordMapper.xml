@@ -18,6 +18,9 @@
             <if test="completeTime != null">
                 completeTime = #{completeTime},
             </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime},
+            </if>
         </set>
         where id = #{id}
     </update>

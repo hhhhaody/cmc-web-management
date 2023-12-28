@@ -50,6 +50,21 @@ public class MaterialController {
     }
 
     /**
+     * 列表搜索联想
+     * @param material
+     * @param field
+     * @return
+     */
+
+    @PostMapping("/searchAdvance/{field}")
+    public Result searchAdvanceSuggestion(@RequestBody Material material,@PathVariable String field){
+        log.info("根据用户已输入信息查询已有数据：{},{}",material,field);
+
+        List<Value> res =  materialService.search(material,field);
+        return Result.success(res);
+    }
+
+    /**
      * 弹框内搜索联想
      * @param material
      * @param field
@@ -85,7 +100,7 @@ public class MaterialController {
     public Result insert(@RequestBody Material material){
         log.info("新增物料:{}",material);
         materialService.insert(material);
-        return Result.success();
+        return Result.success("新增成功");
     }
 
     /**
@@ -109,6 +124,6 @@ public class MaterialController {
     public Result update(@RequestBody Material material){
         log.info("更新物料信息");
         materialService.update(material);
-        return Result.success();
+        return Result.success("更新成功");
     }
 }

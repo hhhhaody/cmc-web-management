@@ -29,4 +29,7 @@ public class Facility {
     private Integer batch;
     private Integer batchSame;
     private LocalDateTime prevDailyTime;
+    private String prevMaintenanceman;
+    private String prevInfo;
+
 }

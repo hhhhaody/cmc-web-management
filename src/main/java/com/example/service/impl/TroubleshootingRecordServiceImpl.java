@@ -8,6 +8,7 @@ import com.example.service.TroubleshootingRecordService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,6 +90,13 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
         //补充故障维修记录表
         troubleshootingRecord.setStation(facility.getStation());
 
+        //检查是否是首次更新
+        if(!facility.getStatus().equals("检修维护")){
+//            System.out.println(troubleshootingRecord.getUpdateTime());
+            facilityStatusMapper.deleteByTime(troubleshootingRecord.getUpdateTime());
+        }
+        LocalDateTime now = LocalDateTime.now();
+
         //更新设备状态记录表
         FacilityStatus facilityStatus = new FacilityStatus();
         facilityStatus.setName(troubleshootingRecord.getName());
@@ -96,7 +104,7 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
         facilityStatus.setStation(troubleshootingRecord.getStation());
         facilityStatus.setSection(troubleshootingRecord.getSection());
         facilityStatus.setSerialNo(troubleshootingRecord.getSerialNo());
-        facilityStatus.setUpdateTime(LocalDateTime.now());
+        facilityStatus.setUpdateTime(now);
         facilityStatus.setBeforeStatus("检修维护");
 
         //更新设备状态
@@ -111,6 +119,9 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
         //更新设备状态记录表
         facilityStatusMapper.insert(facilityStatus);
 
+
+        troubleshootingRecord.setUpdateTime(now);
         troubleshootingRecordMapper.update(troubleshootingRecord);
+
     }
 }

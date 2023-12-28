@@ -45,6 +45,15 @@
             <if test="attachment != null and attachment != ''">
                 attachment = #{attachment},
             </if>
+            <if test="prevMaintenanceman != null and prevMaintenanceman != ''">
+                prevMaintenanceman = #{prevMaintenanceman},
+            </if>
+            <if test="prevInfo != null and prevInfo != ''">
+                prevInfo = #{prevInfo},
+        </if>
+            <if test="prevDailyTime != null">
+                prevDailyTime = #{prevDailyTime},
+            </if>
 
         </set>
         where id = #{id}

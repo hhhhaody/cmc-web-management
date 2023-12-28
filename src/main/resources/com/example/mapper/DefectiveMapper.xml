@@ -76,4 +76,19 @@
         </where>
         order by value
     </select>
+    <select id="searchAdvance" resultType="com.example.pojo.Value">
+        select distinct ${field} as value from defective
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+        </where>
+        order by value
+    </select>
 </mapper>

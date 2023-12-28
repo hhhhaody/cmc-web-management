@@ -55,4 +55,12 @@ public class DefectiveServiceImpl implements DefectiveService {
         }
     }
 
+    @Override
+    public List<Value> searchAdvance(Defective defective, String field) {
+        String name = defective.getName();
+        String spec = defective.getSpec();
+        String supplier = defective.getSupplier();
+        return defectiveMapper.searchAdvance(name,spec,supplier,field);
+    }
+
 }

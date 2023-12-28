@@ -33,7 +33,7 @@
                 operation = #{operation}
             </if>
             <if test="name != null and name != ''">
-                name like concat('%', #{name}, '%')
+                and name like concat('%', #{name}, '%')
             </if>
             <if test="spec != null and spec != ''">
                 and spec like concat('%', #{spec}, '%')
@@ -51,26 +51,28 @@
         Order by operateTime desc
     </select>
     <select id="search" resultType="com.example.pojo.Value">
-        select distinct ${field} as value from material_operation
-        <where>
-            batch IN (
-            SELECT batch
-            FROM material_operation
-            GROUP BY batch
-            HAVING SUM(CASE WHEN operation = '入库' THEN amount ELSE 0 END) > SUM(CASE WHEN operation != '入库' THEN amount
-            ELSE 0 END)
-            )
-            <if test="name != null and name != ''">
-                and name = #{name}
-            </if>
-            <if test="spec != null and spec != ''">
-                and spec = #{spec}
-            </if>
-            <if test="batch != null and batch != ''">
-                and batch = #{batch}
-            </if>
-        </where>
-        order by value
+        SELECT DISTINCT ${field} AS value
+        FROM material_operation
+        WHERE batch IN (
+        SELECT batch
+        FROM (
+        SELECT mo.batch
+        FROM material_operation mo
+        JOIN material m ON m.name = mo.name AND m.spec = mo.spec
+        GROUP BY mo.batch
+        HAVING SUM(CASE WHEN mo.operation = '入库' THEN mo.amount ELSE 0 END) > SUM(CASE WHEN mo.operation != '入库' THEN mo.amount ELSE 0 END)
+        ) subquery
+        )
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+        <if test="spec != null and spec != ''">
+            AND spec = #{spec}
+        </if>
+        <if test="batch != null and batch != ''">
+            AND batch = #{batch}
+        </if>
+        ORDER BY value;
     </select>
     <select id="getByBatch" resultType="com.example.pojo.MaterialOperation">
         SELECT id,
@@ -110,6 +112,29 @@
         FROM material_operation AS mo
         WHERE mo.batch = #{batch} limit 1;
 
+
+    </select>
+    <select id="searchAdvance" resultType="com.example.pojo.Value">
+        SELECT DISTINCT ${field} AS value
+        FROM material_operation
+        <where>
+            <if test="operation != null and operation != ''">
+                operation = #{operation}
+            </if>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator like concat('%', #{operator}, '%')
+            </if>
+            <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+        </where>
+        ORDER BY value;
 
     </select>
 </mapper>
