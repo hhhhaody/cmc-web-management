@@ -18,6 +18,8 @@ public interface ProductionLineService {
 
     void updateStations(ProductionLine productionLine);
 
+    List<Long> getSectionIdsBySectionName(String sectionName);
+
     List<Value> searchField(String field);
 
     List<IdStrPair> getStationsIds(String section);

@@ -34,6 +34,9 @@ public interface ProductionLineMapper {
     @Update("update production_line set section = #{newName} where section = #{section}")
     void updateSectionName(String section, String newName);
 
+    @Select("select id from production_line where section = #{sectionName}")
+    List<Long> getSectionIdsBySectionName(String sectionName);
+
     /**
      * 查询此field已有数据
      * @param field
@@ -52,7 +55,4 @@ public interface ProductionLineMapper {
     String getStationById(Integer productionLine);
 
     List<Value> search(String section, String station, String field);
-
-    @Select("select id from production_line where section = #{section}")
-    List<Long> getSectionIdsBySectionName(String section);
 }

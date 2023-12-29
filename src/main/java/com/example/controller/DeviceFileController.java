@@ -22,8 +22,8 @@ public class DeviceFileController {
     // 获取所有文件夹，支持关键字搜索和分页
     @GetMapping("/getAllFolder")
     public Result getAllFolder(@RequestParam(required = false) String keyword,
-                             @RequestParam(defaultValue = "1") Integer page,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
+                               @RequestParam(defaultValue = "1") Integer page,
+                               @RequestParam(defaultValue = "10") Integer pageSize) {
         return Result.success(deviceFileService.getAllFolder(keyword, page, pageSize));
     }
 
@@ -51,6 +51,26 @@ public class DeviceFileController {
                              @RequestParam("fileSize") Long fileSize,
                              @RequestParam("folderId") Long folderId) {
         log.info("接收文件信息：{}，文件大小：{}，文件夹ID：{}", fileName, fileSize, folderId);
+
+        // 检查文件大小
+        if (fileSize > 10485760) { // 10MB = 10 * 1024 * 1024 bytes
+            return Result.error("文件大小超过限制（10MB）");
+        }
+
+        // 检查文件类型
+        String[] allowedTypes = {".docx", ".pdf", ".txt"};
+        boolean isAllowedType = false;
+
+        for (String type : allowedTypes) {
+            if (fileName.toLowerCase().endsWith(type)) {
+                isAllowedType = true;
+                break;
+            }
+        }
+
+        if (!isAllowedType) {
+            return Result.error("不支持的文件类型");
+        }
 
         // 将文件信息保存到数据库
         String newFileName = deviceFileService.uploadFile(folderId, fileName, fileSize);

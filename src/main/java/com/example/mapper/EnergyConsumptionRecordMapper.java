@@ -25,17 +25,47 @@ public interface EnergyConsumptionRecordMapper {
     int delete(Long recordId);
 
     @Select("<script>" +
-            "select * from energyconsumptionrecord where section_id in " +
+            "SELECT * FROM energyconsumptionrecord " +
+            "WHERE section_id IN " +
             "<foreach item='item' index='index' collection='sectionIds' open='(' separator=',' close=')'>" +
             "#{item}" +
-            "</foreach>" +
-            "<if test='startDate != null and endDate != null'>" +
+            "</foreach> " +
+            "<if test='startDate != null and endDate != null'> " +
             "AND production_date BETWEEN #{startDate} AND #{endDate} " +
-            "</if>" +
-            "order by timestamp desc " +
-            "limit #{offset}, #{pageSize}" +
+            "</if> " +
+            "ORDER BY production_date DESC, timestamp DESC " +
+            "LIMIT #{offset}, #{pageSize} " +
             "</script>")
     List<EnergyConsumptionRecord> selectBySectionIds(@Param("sectionIds") List<Long> sectionIds, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    @Select("<script>" +
+            "SELECT * FROM EnergyConsumptionRecord WHERE (section_id, production_date, timestamp) IN (" +
+            "SELECT section_id, production_date, MIN(timestamp) " +
+            "FROM EnergyConsumptionRecord " +
+            "WHERE section_id IN " +
+            "<foreach item='item' index='index' collection='sectionId' open='(' separator=',' close=')'>" +
+            "#{item}" +
+            "</foreach> " +
+            "<if test='startDate != null and endDate != null'> " +
+            "AND production_date BETWEEN #{startDate} AND #{endDate} " +
+            "</if> " +
+            "GROUP BY section_id, production_date) " +
+            "ORDER BY production_date DESC, timestamp ASC " +
+            "LIMIT #{offset}, #{pageSize} " +
+            "</script>")
+    List<EnergyConsumptionRecord> selectFirstRecordByDate(@Param("sectionId") List<Long> sectionId, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    @Select("<script>" +
+            "SELECT COUNT(DISTINCT production_date) FROM EnergyConsumptionRecord " +
+            "WHERE section_id IN " +
+            "<foreach item='item' index='index' collection='sectionIds' open='(' separator=',' close=')'>" +
+            "#{item}" +
+            "</foreach> " +
+            "<if test='startDate != null and endDate != null'> " +
+            "AND production_date BETWEEN #{startDate} AND #{endDate} " +
+            "</if> " +
+            "</script>")
+    Long countFirstRecordByDate(@Param("sectionIds") List<Long> sectionIds, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Select("<script>" +
             "select count(*) from energyconsumptionrecord where section_id in " +
@@ -50,6 +80,5 @@ public interface EnergyConsumptionRecordMapper {
 
     @Select("SELECT * FROM EnergyConsumptionRecord ORDER BY timestamp DESC LIMIT 1")
     EnergyConsumptionRecord getLastRecord();
-
 }
 

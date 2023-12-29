@@ -39,7 +39,6 @@ public interface DeviceFileFolderMapper {
     })
     Long count(String keyword);
 
-
     /**
      * 查询tbl_folders表中某个字段的唯一值。
      * @param field
@@ -52,5 +51,8 @@ public interface DeviceFileFolderMapper {
     @Select("select distinct ${field} as value from tbl_folders where folder_name like CONCAT('%',#{folder_name},'%') order by value")
     List<Value> searchByField(@Param("folderName") String folderName, @Param("field") String field);
 
+    // 根据ID查询文件夹详情
+    @Select("SELECT * FROM tbl_folders WHERE folder_id = #{folderId}")
+    DeviceFileFolder findById(Long folderId);
 }
 
