@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,7 +20,7 @@ public class Facility {
     private LocalDateTime purchaseTime;
     private String supplier;
     private String contact;
-    private Integer contactNo;
+    private BigInteger contactNo;
     private String status;
     private String warranty;
     private Boolean dailyMaintenance;
