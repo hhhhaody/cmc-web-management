@@ -99,7 +99,12 @@ public class MaterialController {
     @PostMapping
     public Result insert(@RequestBody Material material){
         log.info("新增物料:{}",material);
-        materialService.insert(material);
+        try{
+            materialService.insert(material);
+        }
+        catch (Exception e){
+            return Result.error("该物料类型已存在");
+        }
         return Result.success("新增成功");
     }
 
