@@ -13,5 +13,5 @@ public class StateData {
     private BigInteger id;
     private Long sectionID;
     private Long stationID;
-    private String stateID;
+    private Long stateID;
 }
