@@ -45,6 +45,9 @@
             <if test="attachment != null and attachment != ''">
                 attachment = #{attachment},
             </if>
+            <if test="picture != null and picture != ''">
+                picture = #{picture},
+            </if>
             <if test="prevMaintenanceman != null and prevMaintenanceman != ''">
                 prevMaintenanceman = #{prevMaintenanceman},
             </if>

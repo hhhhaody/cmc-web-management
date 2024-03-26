@@ -14,14 +14,14 @@ public interface EnergyConsumptionRecordMapper {
 //    @Select("SELECT COUNT(*) FROM EnergyConsumptionRecord WHERE section_id = #{sectionId} AND production_date BETWEEN #{startDate} AND #{endDate}")
 //    Long countBySectionAndDateRange(Long sectionId, Date startDate, Date endDate);
 
-    @Insert("INSERT INTO EnergyConsumptionRecord (section_id, production_date, timestamp, current, voltage, power, energy_consumed) VALUES (#{sectionId}, #{productionDate}, #{timestamp}, #{current}, #{voltage}, #{power}, #{energyConsumed})")
+    @Insert("INSERT INTO energyconsumptionrecord (section_id, production_date, timestamp, current, voltage, power, energy_consumed) VALUES (#{sectionId}, #{productionDate}, #{timestamp}, #{current}, #{voltage}, #{power}, #{energyConsumed})")
     @Options(useGeneratedKeys = true, keyProperty = "recordId")
     int insert(EnergyConsumptionRecord record);
 
-    @Update("UPDATE EnergyConsumptionRecord SET section_id = #{sectionId}, production_date = #{productionDate}, timestamp = #{timestamp}, current = #{current}, voltage = #{voltage}, power = #{power}, energy_consumed = #{energyConsumed} WHERE record_id = #{recordId}")
+    @Update("UPDATE energyconsumptionrecord SET section_id = #{sectionId}, production_date = #{productionDate}, timestamp = #{timestamp}, current = #{current}, voltage = #{voltage}, power = #{power}, energy_consumed = #{energyConsumed} WHERE record_id = #{recordId}")
     int update(EnergyConsumptionRecord record);
 
-    @Delete("DELETE FROM EnergyConsumptionRecord WHERE record_id = #{recordId}")
+    @Delete("DELETE FROM energyconsumptionrecord WHERE record_id = #{recordId}")
     int delete(Long recordId);
 
     @Select("<script>" +
@@ -39,9 +39,9 @@ public interface EnergyConsumptionRecordMapper {
     List<EnergyConsumptionRecord> selectBySectionIds(@Param("sectionIds") List<Long> sectionIds, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("offset") int offset, @Param("pageSize") int pageSize);
 
     @Select("<script>" +
-            "SELECT * FROM EnergyConsumptionRecord WHERE (section_id, production_date, timestamp) IN (" +
+            "SELECT * FROM energyconsumptionrecord WHERE (section_id, production_date, timestamp) IN (" +
             "SELECT section_id, production_date, MIN(timestamp) " +
-            "FROM EnergyConsumptionRecord " +
+            "FROM energyconsumptionrecord " +
             "WHERE section_id IN " +
             "<foreach item='item' index='index' collection='sectionId' open='(' separator=',' close=')'>" +
             "#{item}" +
@@ -56,7 +56,7 @@ public interface EnergyConsumptionRecordMapper {
     List<EnergyConsumptionRecord> selectFirstRecordByDate(@Param("sectionId") List<Long> sectionId, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("offset") int offset, @Param("pageSize") int pageSize);
 
     @Select("<script>" +
-            "SELECT COUNT(DISTINCT production_date) FROM EnergyConsumptionRecord " +
+            "SELECT COUNT(DISTINCT production_date) FROM energyconsumptionrecord " +
             "WHERE section_id IN " +
             "<foreach item='item' index='index' collection='sectionIds' open='(' separator=',' close=')'>" +
             "#{item}" +
@@ -78,7 +78,7 @@ public interface EnergyConsumptionRecordMapper {
             "</script>")
     Long countBySectionIds(@Param("sectionIds") List<Long> sectionIds, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-    @Select("SELECT * FROM EnergyConsumptionRecord ORDER BY timestamp DESC LIMIT 1")
+    @Select("SELECT * FROM energyconsumptionrecord ORDER BY timestamp DESC LIMIT 1")
     EnergyConsumptionRecord getLastRecord();
 }
 

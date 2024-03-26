@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CarbonMapper">
+    <update id="update">
+        update material_operation
+        <set>
+            <if test="supplier != null and supplier != ''">
+                supplier = #{supplier},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="supplyTime != null">
+                supplyTime = #{supplyTime},
+            </if>
+            <if test="receipt != null and receipt != ''">
+                receipt = #{receipt},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="list" resultType="com.example.pojo.Carbon">
+        select *
+        from carbon_emissions
+        <where>
+            <if test="type != null and type != ''">
+                type = #{type}
+            </if>
+            <if test="section != null and section != ''">
+                and section = #{section}
+            </if>
+            <if test="startDate != null and endDate != null">
+                and updateTime between #{startDate} and #{endDate}
+            </if>
+        </where>
+        Order by updateTime desc
+    </select>
+    <select id="search" resultType="com.example.pojo.Value">
+        SELECT DISTINCT ${field} AS value
+        FROM material_operation
+        WHERE batch IN (
+        SELECT batch
+        FROM (
+        SELECT mo.batch
+        FROM material_operation mo
+        JOIN material m ON m.name = mo.name AND m.spec = mo.spec
+        GROUP BY mo.batch
+        HAVING SUM(CASE WHEN mo.operation = '入库' THEN mo.amount ELSE 0 END) > SUM(CASE WHEN mo.operation != '入库' THEN mo.amount ELSE 0 END)
+        ) subquery
+        )
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+        <if test="spec != null and spec != ''">
+            AND spec = #{spec}
+        </if>
+        <if test="batch != null and batch != ''">
+            AND batch = #{batch}
+        </if>
+        ORDER BY value;
+    </select>
+    <select id="getByBatch" resultType="com.example.pojo.MaterialOperation">
+        SELECT id,
+               name,
+               spec,
+               supplyTime,
+               supplier,
+               operation,
+               operateTime,
+               operator,
+               receipt,
+               batch,
+               (SELECT SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END)
+                FROM material_operation
+                WHERE batch = mo.batch) AS amount
+        FROM material_operation AS mo
+        WHERE mo.batch = #{batch}
+          and operation = '入库';
+    </select>
+    <select id="getByBatchReturned" resultType="com.example.pojo.MaterialOperation">
+
+        SELECT
+            id,
+            name,
+            spec,
+            supplyTime,
+            supplier,
+            operation,
+            operateTime,
+            operator,
+            receipt,
+            batch,
+            (SELECT SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END) AS total_amount
+             FROM material_operation
+             WHERE batch = #{batch}
+             GROUP BY batch) AS amount
+        FROM material_operation AS mo
+        WHERE mo.batch = #{batch} limit 1;
+
+
+    </select>
+    <select id="searchAdvance" resultType="com.example.pojo.Value">
+        SELECT DISTINCT ${field} AS value
+        FROM material_operation
+        <where>
+            <if test="operation != null and operation != ''">
+                operation = #{operation}
+            </if>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="spec != null and spec != ''">
+                and spec like concat('%', #{spec}, '%')
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator like concat('%', #{operator}, '%')
+            </if>
+            <if test="supplier != null and supplier != ''">
+                and supplier like concat('%', #{supplier}, '%')
+            </if>
+        </where>
+        ORDER BY value;
+
+    </select>
+</mapper>

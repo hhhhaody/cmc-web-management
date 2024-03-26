@@ -44,11 +44,17 @@ public class FacilityServiceImpl implements FacilityService {
     @Transactional
     @Override
     public void insert(Facility facility) {
-        Integer batch = facilityMapper.getMaxBatch(facility.getName());
-        if(batch != null){
-            facility.setBatch(batch+1);
+        Integer batch = facilityMapper.getBatch(facility.getName(),facility.getSpec());
+        if(batch == null){
+            batch = facilityMapper.getMaxBatch(facility.getName(),facility.getSpec());
+            if(batch != null){
+                facility.setBatch(batch+1);
+            }
+            else facility.setBatch(1);
         }
-        else facility.setBatch(1);
+        else{
+            facility.setBatch(batch);
+        }
         Integer batchSame = facilityMapper.getMaxBatchSame(facility.getName(),facility.getSpec());
         if(batchSame != null){
             facility.setBatchSame(batchSame+1);
@@ -128,11 +134,62 @@ public class FacilityServiceImpl implements FacilityService {
         return facilityMapper.getById(facility_id);
     }
 
+    @Transactional
     @Override
     public void update(Facility facility) {
         if(facility.getPrevMaintenanceman()!=null && facility.getPrevInfo()!=null){
             facility.setPrevDailyTime(LocalDateTime.now());
         }
+        //删除此设备之前所有设备维护计划
+        maintenancePlanMapper.deleteBySerialNo(facility.getSerialNo());
+
+        //根据更新的信息新增维护计划
+        String firstLevelMaintenance = facility.getFirstLevelMaintenance();
+        String secondLevelMaintenance = facility.getSecondLevelMaintenance();
+        LocalDateTime start = facility.getPurchaseTime();
+
+        Integer first = Integer.parseInt(firstLevelMaintenance.replaceAll("[^0-9]", ""));
+        Integer second = Integer.parseInt(secondLevelMaintenance.replaceAll("[^0-9]", ""));
+
+        MaintenancePlan maintenancePlan1 = new MaintenancePlan();
+        MaintenancePlan maintenancePlan2 = new MaintenancePlan();
+
+        maintenancePlan1.setName(facility.getName());
+        maintenancePlan1.setSpec(facility.getSpec());
+        maintenancePlan1.setSection(facility.getSection());
+        maintenancePlan1.setStation(facility.getStation());
+        maintenancePlan1.setSerialNo(facility.getSerialNo());
+        maintenancePlan1.setType("一级保养");
+        maintenancePlan1.setStatus("待完成");
+        maintenancePlan1.setOngoing(false);
+        if(firstLevelMaintenance.endsWith("月")){
+            maintenancePlan1.setPlannedTime(start.plusMonths(first));
+        } else if (firstLevelMaintenance.endsWith("周")) {
+            maintenancePlan1.setPlannedTime(start.plusWeeks(first));
+        } else{
+            maintenancePlan1.setPlannedTime(start.plusYears(first));
+        }
+
+        maintenancePlan2.setName(facility.getName());
+        maintenancePlan2.setSpec(facility.getSpec());
+        maintenancePlan2.setSection(facility.getSection());
+        maintenancePlan2.setStation(facility.getStation());
+        maintenancePlan2.setSerialNo(facility.getSerialNo());
+        maintenancePlan2.setType("二级保养");
+        maintenancePlan2.setStatus("待完成");
+        maintenancePlan2.setOngoing(false);
+        if(secondLevelMaintenance.endsWith("月")){
+            maintenancePlan2.setPlannedTime(start.plusMonths(second));
+        }
+        else if(secondLevelMaintenance.endsWith("周")){
+            maintenancePlan2.setPlannedTime(start.plusWeeks(second));
+        }
+        else{
+            maintenancePlan2.setPlannedTime(start.plusYears(second));
+        }
+
+        maintenancePlanMapper.insert(maintenancePlan1);
+        maintenancePlanMapper.insert(maintenancePlan2);
         facilityMapper.update(facility);
     }
 

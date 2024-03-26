@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.pojo.Facility;
 import com.example.pojo.MaintenancePlan;
 import com.example.pojo.TroubleshootingRecord;
 import com.example.pojo.Value;
@@ -31,4 +32,7 @@ public interface MaintenancePlanMapper {
     @Delete("delete from maintenance_plan where name = #{name} and spec = #{spec} and section = #{section} and station = #{station} " +
             "and serialNo = #{serialNo} and type = #{type} and status = '待完成'")
     void delete(MaintenancePlan maintenancePlan);
+
+    @Delete("delete from maintenance_plan where serialNo = #{serialNo} and status = '待完成'")
+    void deleteBySerialNo(String serialNo);
 }

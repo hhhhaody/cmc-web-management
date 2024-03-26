@@ -27,6 +27,7 @@ public class Facility {
     private String firstLevelMaintenance;
     private String secondLevelMaintenance;
     private String attachment;
+    private String picture;
     private Integer batch;
     private Integer batchSame;
     private LocalDateTime prevDailyTime;

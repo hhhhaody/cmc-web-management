@@ -13,12 +13,21 @@ public interface FacilityMapper {
     List<Value> searchField(String field);
 
     /**
+     * 查询当前设备类型是否已存在流水号并获得当前设备类型的流水号
+     * @param name
+     * @return
+     */
+    @Select("SELECT batch FROM facility where name = #{name} and spec = #{spec}")
+    Integer getBatch(String name, String spec);
+
+
+    /**
      * 获得当前设备类型中最大的流水号以生成新的规格的流水号
      * @param name
      * @return
      */
     @Select("SELECT Max(batch) FROM facility where name = #{name} and spec != #{spec}")
-    Integer getMaxBatch(String name);
+    Integer getMaxBatch(String name, String spec);
 
     /**
      * 获得相同设备类型中最大的流水号以生成新的规格的流水号
@@ -28,8 +37,8 @@ public interface FacilityMapper {
     @Select("SELECT Max(batchSame) FROM facility where name = #{name} and spec = #{spec}")
     Integer getMaxBatchSame(String name, String spec);
 
-    @Insert("insert into facility(name, spec, station ,section,serialNo,purchaseTime,supplier,contact,contactNo,status,warranty,dailyMaintenance,firstLevelMaintenance,secondLevelMaintenance,attachment, batch,batchSame) values " +
-            "(#{name}, #{spec}, #{station} ,#{section},#{serialNo},#{purchaseTime},#{supplier},#{contact},#{contactNo},#{status},#{warranty},#{dailyMaintenance},#{firstLevelMaintenance},#{secondLevelMaintenance},#{attachment},#{batch},#{batchSame})")
+    @Insert("insert into facility(name, spec, station ,section,serialNo,purchaseTime,supplier,contact,contactNo,status,warranty,dailyMaintenance,firstLevelMaintenance,secondLevelMaintenance,attachment,picture, batch,batchSame) values " +
+            "(#{name}, #{spec}, #{station} ,#{section},#{serialNo},#{purchaseTime},#{supplier},#{contact},#{contactNo},#{status},#{warranty},#{dailyMaintenance},#{firstLevelMaintenance},#{secondLevelMaintenance},#{attachment},#{picture},#{batch},#{batchSame})")
     void insert(Facility facility);
 
 
