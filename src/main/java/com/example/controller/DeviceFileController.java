@@ -53,8 +53,8 @@ public class DeviceFileController {
         log.info("接收文件信息：{}，文件大小：{}，文件夹ID：{}", fileName, fileSize, folderId);
 
         // 检查文件大小
-        if (fileSize > 10485760) { // 10MB = 10 * 1024 * 1024 bytes
-            return Result.error("文件大小超过限制（10MB）");
+        if (fileSize > 52428800) { // 10MB = 10 * 1024 * 1024 bytes
+            return Result.error("文件大小超过限制（50MB）");
         }
 
         // 检查文件类型
