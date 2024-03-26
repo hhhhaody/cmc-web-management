@@ -1,4 +1,5 @@
 package com.example.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -24,7 +25,9 @@ public class WebConfig {
                 registry.addMapping("/**")
                         // 允许来自 "http://10.200.20.17:5173" 的跨域请求
 //                        .allowedOrigins("http://10.10.205.58:5173")
-                        .allowedOrigins("http://10.200.20.17:5173", "http://10.10.204.67:5173","http://localhost:5173","http://192.168.10.117:5173","http://192.168.10.222:5173","http://172.20.10.7:5173")
+//                        .allowedOrigins("http://192.168.10.168:8088", "http://localhost:8088", "http://192.168.10.82:5173", "http://39.101.176.85:6000")
+                        // 允许来自任何源的跨域请求
+                        .allowedOriginPatterns("*")
                         // 允许的HTTP方法（GET、POST、PUT、DELETE、HEAD、OPTIONS）
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                         // 允许的HTTP头

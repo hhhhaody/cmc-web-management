@@ -57,11 +57,24 @@ public class UserController {
         claims.put("idNumber", foundUser.getIdNumber());
         claims.put("status", foundUser.getStatus());
         claims.put("adminType", foundUser.getAdminType());
-        // 添加其他需要的字段
 
         // 生成JWT令牌
         String token = jwtUtil.generateToken(claims);
-        return Result.success(token);
+
+        // 不包含敏感信息的userInfo
+        Map<String, Object> safeUserInfo = new HashMap<>();
+        safeUserInfo.put("name", foundUser.getName());
+        safeUserInfo.put("phone", foundUser.getPhone());
+        safeUserInfo.put("sex", foundUser.getSex());
+        safeUserInfo.put("status", foundUser.getStatus());
+        safeUserInfo.put("adminType", foundUser.getAdminType());
+        // 添加其他需要公开的用户信息字段
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("token", token);
+        responseData.put("userInfo", safeUserInfo);
+
+        return Result.success(responseData);
     }
 
     /**
@@ -203,7 +216,7 @@ public class UserController {
             // 捕获旧密码不正确的异常
             if ("旧密码不正确".equals(e.getMessage())) {
                 // 旧密码不正确的错误处理，返回200 OK，但在body中指明错误
-                return ResponseEntity.ok(Result.error("   ，请重新输入"));
+                return ResponseEntity.ok(Result.error("旧密码不正确，请重新输入"));
             } else {
                 // 其他运行时异常的处理
                 return ResponseEntity.internalServerError().body(Result.error("内部服务器错误"));
