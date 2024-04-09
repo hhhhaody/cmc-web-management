@@ -2,6 +2,8 @@ package com.example.service;
 
 import com.example.pojo.*;
 
+import java.util.List;
+
 public interface DataService {
     void alarm(AlarmData alarmData);
 
@@ -14,4 +16,8 @@ public interface DataService {
     void timeConsumed(TimeConsumedData timeConsumedData);
 
     void energy(EnergyData energyData);
+
+    List<DeviceMapping> getDevice();
+
+    void setStatus(Long id);
 }

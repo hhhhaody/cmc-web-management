@@ -31,7 +31,6 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
     @Transactional
     @Override
     public PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, String maintenanceman, LocalDateTime plannedTime, String calendar) {
-        //TODO: 删减相同设备多余一级/二级保养
         PageHelper.startPage(page, pageSize);
 
         if(plannedTime != null){

@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public class TimeConsumedData {
     private BigInteger id;
     private Long sectionID;
-    private Long stationID;
+    private Long stationID; //实际上为设备id
     private Long productID;
     private Long currentNo;
     private Long timeConsumed;

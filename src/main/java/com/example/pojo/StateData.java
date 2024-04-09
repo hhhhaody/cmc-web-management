@@ -12,6 +12,6 @@ import java.math.BigInteger;
 public class StateData {
     private BigInteger id;
     private Long sectionID;
-    private Long stationID;
+    private Long stationID; //实际上为设备id
     private Long stateID;
 }

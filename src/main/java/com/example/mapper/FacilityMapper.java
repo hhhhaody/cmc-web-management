@@ -65,4 +65,7 @@ public interface FacilityMapper {
 
     @Update("update facility set prevDailyTime = #{now} where serialNo = #{serialNo}")
     void updateDailyTime(String serialNo, LocalDateTime now);
+
+    @Select("select * from cmc.facility where mappingId =#{id}")
+    Facility getByMappingId(Long id);
 }

@@ -3,6 +3,10 @@ package com.example.mapper;
 import com.example.pojo.*;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 @Mapper
 public interface DataMapper {
@@ -28,4 +32,29 @@ public interface DataMapper {
     @Insert("insert into energy_data(sectionID,power,powerConsumption) values" +
             " (#{sectionID}, #{power}, #{powerConsumption})")
     void energy(EnergyData energyData);
+
+
+    @Update("update alarm_mapping set state = #{state} where id = #{alarmID}")
+    void setAlarm(Long alarmID, boolean state);
+
+    //此处station id为设备编码
+    @Update("update device_mapping set state = #{state} where id = #{stationID}")
+    void setState(Long stationID, String state);
+
+    @Select("select state from state_mapping where id = #{stateID}")
+    String getStateInfo(Long stateID);
+
+    @Select("select * from device_mapping")
+    List<DeviceMapping> getDevice();
+
+    //此处station id为设备编码
+    @Update("update device_mapping set status = #{status} where id = #{stationID}")
+    void setStatus(Long stationID, String status);
+
+    //此处station id为设备编码
+    @Select("select status from device_mapping where id = #{stateID}")
+    String getStatusInfo(Long stateID);
+
+    @Select("select * from alarm_mapping where deviceId = #{id} and state == true")
+    List<AlarmMapping> getAlarmInfo(Long id);
 }

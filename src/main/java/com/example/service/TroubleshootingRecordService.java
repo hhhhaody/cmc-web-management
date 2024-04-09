@@ -19,4 +19,6 @@ public interface TroubleshootingRecordService {
     TroubleshootingRecord getById(Integer troubleshootingRecord_id);
 
     void update(TroubleshootingRecord troubleshootingRecord);
+
+    void addById(Long id);
 }

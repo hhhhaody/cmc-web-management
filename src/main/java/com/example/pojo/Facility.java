@@ -33,5 +33,6 @@ public class Facility {
     private LocalDateTime prevDailyTime;
     private String prevMaintenanceman;
     private String prevInfo;
+    private Long mappingId;
 
 }
