@@ -29,6 +29,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public void material(MaterialData materialData) {
+        //更新物料库存表
         dataMapper.material(materialData);
     }
 

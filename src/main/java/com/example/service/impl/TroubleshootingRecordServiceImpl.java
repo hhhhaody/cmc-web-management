@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.mapper.DataMapper;
 import com.example.mapper.FacilityMapper;
 import com.example.mapper.FacilityStatusMapper;
 import com.example.mapper.TroubleshootingRecordMapper;
@@ -26,6 +27,9 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
 
     @Autowired
     private FacilityStatusMapper facilityStatusMapper;
+
+    @Autowired
+    private DataMapper dataMapper;
 
     @Override
     public PageBean page(Integer page, Integer pageSize, String name, String spec, String section, String status, LocalDateTime completeTimeStart, LocalDateTime completeTimeEnd, String repairman) {
@@ -111,10 +115,12 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
         if(troubleshootingRecord.getStatus().equals("完成维修")){
             facilityStatus.setAfterStatus("正常使用");
             facilityMapper.updateStatusBySerialNo(troubleshootingRecord.getSerialNo(),"正常使用");
+            dataMapper.setStatus(facility.getMappingId(),"正常使用");
         }
         else{
             facilityStatus.setAfterStatus("停用");
             facilityMapper.updateStatusBySerialNo(troubleshootingRecord.getSerialNo(),"停用");
+            dataMapper.setStatus(facility.getMappingId(),"停用");
         }
         //更新设备状态记录表
         facilityStatusMapper.insert(facilityStatus);
@@ -122,6 +128,63 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
 
         troubleshootingRecord.setUpdateTime(now);
         troubleshootingRecordMapper.update(troubleshootingRecord);
+
+    }
+
+    //根据设备映射表id新增设备维护记录
+    @Override
+    @Transactional
+    public void addById(Long id) {
+        //TODO:新增设备维护记录
+        //新增故障维修记录表
+        //根据mappingId读取设备信息
+        Facility facility = facilityMapper.getByMappingId(id);
+        TroubleshootingRecord troubleshootingRecord = new TroubleshootingRecord();
+        troubleshootingRecord.setName(facility.getName());
+        troubleshootingRecord.setSpec(facility.getSpec());
+        troubleshootingRecord.setSection(facility.getSection());
+        troubleshootingRecord.setStation(facility.getStation());
+        troubleshootingRecord.setSerialNo(facility.getSerialNo());
+
+        String error = "";
+        //查询此设备具体报警信息
+        List <AlarmMapping> alarmMappings =  dataMapper.getAlarmInfo(id);
+        for (int i = 0; i < alarmMappings.size(); i++) {
+            error = error + alarmMappings.get(i).getAlarmInfo();
+        }
+        if(error.equals("")){
+            error = "设备未反馈报警信息";
+        }
+
+        troubleshootingRecord.setError(error);
+        //根据状态更新时间设定报警时间
+        //查询工段编号
+        Integer sectionId =  dataMapper.getSectionId(facility.getSection());
+
+        //根据工段编号以及状态信息查询状态编号
+        Integer stateId = dataMapper.getStateId("报警",sectionId);
+
+        //查询最近一次此状态发生时间
+        troubleshootingRecord.setErrorTime(dataMapper.getLatestStateTime(id,stateId));
+
+
+        troubleshootingRecord.setStatus("未完成");
+        troubleshootingRecordMapper.insert(troubleshootingRecord);
+
+        //更新设备状态记录表
+        FacilityStatus facilityStatus = new FacilityStatus();
+        facilityStatus.setName(troubleshootingRecord.getName());
+        facilityStatus.setSpec(troubleshootingRecord.getSpec());
+        facilityStatus.setStation(troubleshootingRecord.getStation());
+        facilityStatus.setSection(troubleshootingRecord.getSection());
+        facilityStatus.setSerialNo(troubleshootingRecord.getSerialNo());
+        facilityStatus.setUpdateTime(troubleshootingRecord.getErrorTime());
+        facilityStatus.setBeforeStatus("正常使用");
+        facilityStatus.setAfterStatus("检修维护");
+        facilityStatusMapper.insert(facilityStatus);
+
+        //更新设备状态
+        facilityMapper.updateStatusBySerialNo(troubleshootingRecord.getSerialNo(),"检修维护");
 
     }
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -44,7 +45,7 @@ public interface DataMapper {
     @Select("select state from state_mapping where id = #{stateID}")
     String getStateInfo(Long stateID);
 
-    @Select("select * from device_mapping")
+    @Select("select * from device_mapping where status != '停用'")
     List<DeviceMapping> getDevice();
 
     //此处station id为设备编码
@@ -55,6 +56,16 @@ public interface DataMapper {
     @Select("select status from device_mapping where id = #{stateID}")
     String getStatusInfo(Long stateID);
 
-    @Select("select * from alarm_mapping where deviceId = #{id} and state == true")
+    @Select("select * from alarm_mapping where deviceId = #{id} and state = true")
     List<AlarmMapping> getAlarmInfo(Long id);
+
+
+    @Select("select id from section_mapping where sectionName = #{section}")
+    Integer getSectionId(String section);
+
+    @Select("select id from state_mapping where state = #{state} and section = #{sectionId}")
+    Integer getStateId(String state, Integer sectionId);
+
+    @Select("select max(updateTime) from state_data where stationID = #{id} and stateID = #{stateId}")
+    LocalDateTime getLatestStateTime(Long id, Integer stateId);
 }

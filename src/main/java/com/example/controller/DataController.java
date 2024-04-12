@@ -5,6 +5,7 @@ import com.example.service.DataService;
 import com.example.service.TroubleshootingRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,6 +63,7 @@ public class DataController {
         return Result.success(deviceMappingList);
     }
 
+    @Transactional
     @PutMapping("/state/{id}")
     public Result setStatus(@PathVariable Long id){
         log.info("更改设备显示状态为检修维护");
