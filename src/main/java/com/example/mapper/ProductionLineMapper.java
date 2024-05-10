@@ -45,7 +45,7 @@ public interface ProductionLineMapper {
     @Select("select distinct ${field} as value from production_line order by value")
     List<Value> searchField(String field);
 
-    @Select("select id, station from production_line where section = #{section}")
+    @Select("select id, station from production_line where section = #{section} and station != '控制工位'")
     List<IdStrPair> getStationsIds(String section);
 
     @Select("select section from production_line where id = #{productionLine}")

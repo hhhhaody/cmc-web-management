@@ -27,7 +27,7 @@ public class MaterialOperationController {
     public Result insert(@RequestBody MaterialOperation materialOperation){
         log.info("物料操作：{}",materialOperation);
         String batch = materialOperationService.insert(materialOperation);
-        return Result.success(materialOperation.getName()+materialOperation.getSpec()+"成功"+materialOperation.getOperation()+materialOperation.getAmount().toString());
+        return Result.success(materialOperation.getName()+materialOperation.getSpec()+"成功"+materialOperation.getOperation()+"【"+ materialOperation.getAmount().toString()+"】");
     }
 
     @GetMapping

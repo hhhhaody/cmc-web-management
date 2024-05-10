@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.pojo.EnergyRecord;
 import com.example.pojo.Material;
 import com.example.pojo.Value;
 import org.apache.ibatis.annotations.*;
@@ -81,4 +82,11 @@ public interface MaterialMapper {
      */
     @Select("select count(*) from material where name=#{name} and spec = #{spec}")
     Integer check(Material material);
+
+    @Update("update material set `${field}` =#{amount} where id = #{id}")
+    void setUsage(Integer id,String field, Long amount);
+
+    @Select("select `${field}` from material where id = #{id}")
+    Integer getUsage(Integer id, String field);
+
 }

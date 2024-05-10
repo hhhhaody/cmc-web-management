@@ -25,13 +25,14 @@
                 SELECT
                     name,
                     spec,
-                    SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END) AS stock
+                    SUM(CASE WHEN operation = '入库' THEN amount ELSE -amount END) AS stock,
+                    SUM(CASE WHEN operation = '出库' THEN amount ELSE 0 END) AS outbound
                 FROM
                     material_operation
                 GROUP BY
                     name, spec
             ) AS op ON m.name = op.name AND m.spec = op.spec
-        SET m.amount = COALESCE(op.stock, NULL);
+        SET m.amount = COALESCE(op.stock, NULL), m.outbound = COALESCE(op.outbound, NULL);
     </update>
     <!--    条件查询-->
     <select id="list" resultType="com.example.pojo.Material">

@@ -6,6 +6,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+import org.springframework.data.relational.core.sql.In;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +78,11 @@ import java.time.format.DateTimeFormatter;
             return getFirstSpell(name).toUpperCase()+"#"+spec+"-"+dtf.format(operateTime);
         }
 
+    public static String getBatchStringDate(String name, String spec, LocalDateTime operateTime, Integer num){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyMMdd");
+        return getFirstSpell(name).toUpperCase()+"#"+spec+"-"+dtf.format(operateTime) +"-"+ String.format("%03d", num);
+    }
+
     public static String getSerialString(String name, String batch, String batchSame){
         return getFirstSpell(name).toUpperCase()+batch+"-"+batchSame;
     }
@@ -85,6 +91,7 @@ import java.time.format.DateTimeFormatter;
 
             System.out.println(getFullSpell("吃饭了吗"));
             System.out.println(getFirstSpell("吃饭了吗").toUpperCase());
+            System.out.println(getBatchStringDate("sdf","1",LocalDateTime.now(),2));
         }
 
 }
