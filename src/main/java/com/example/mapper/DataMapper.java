@@ -5,8 +5,11 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -45,7 +48,7 @@ public interface DataMapper {
     @Select("select state from state_mapping where id = #{stateID}")
     String getStateInfo(Long stateID);
 
-    @Select("select * from device_mapping where status != '停用'")
+    @Select("select d.id, d.name, s.sectionName as section, state, status from device_mapping d JOIN section_mapping s ON d.section = s.id where status != '停用'")
     List<DeviceMapping> getDevice();
 
     //此处station id为设备编码
@@ -68,4 +71,43 @@ public interface DataMapper {
 
     @Select("select max(updateTime) from state_data where stationID = #{id} and stateID = #{stateId}")
     LocalDateTime getLatestStateTime(Long id, Integer stateId);
+
+    @Select("select sectionName from section_mapping where id = #{sectionID}")
+    String getSectionName(Long sectionID);
+
+    @Select("select * from material where ${section} != 0 order by name")
+    List<Material> getMaterialUsage(String section);
+
+    @Select("select * from product where ${section} != 0 order by name")
+    List<Product> getProductAmount(String section);
+
+
+    List<EnergyRecord> getEnergy(Integer section, LocalDate date);
+
+    List<EnergyRecord> listEnergyDates(String section, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    @Insert("insert into production_item (item_code, item_name, item_model, production_date) VALUES (#{batchStr},#{name},#{spec},#{now});")
+    void insertProductionItem(String batchStr, String name, String spec, LocalDate now);
+
+    @Select("select item_id from production_item where item_code = #{batchStr}")
+    Integer getItemIdByItemCode(String batchStr);
+
+    @Select("select time_spent from production_time where item_id = #{itemId} and production_line_id = #{productionLineId}")
+    Long getTimeSpent(Integer itemId, Integer productionLineId);
+
+    @Update("update production_time set time_spent = #{time} where item_id = #{itemId} and production_line_id = #{productionLineId}")
+    void setTimeSpent(Integer itemId, Integer productionLineId, Long time);
+
+    @Insert("insert into production_time (item_id,production_line_id,time_spent) values (#{itemId},#{productionLineId},#{time})")
+    void postTimeSpent(Integer itemId, Integer productionLineId, Long time);
+
+
+    ProductionDetailDto getTimeConsumed(String section);
+
+    ProductionDetailDto getTheoreticalTime(Integer productId);
+
+    @Insert("insert into message (msg) values (#{msg})")
+    void info(String msg);
+
+    List<String> getMessage(LocalDate date);
 }

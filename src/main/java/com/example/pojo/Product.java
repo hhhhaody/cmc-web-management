@@ -21,4 +21,8 @@ public class Product {
     private String section;
     private List<Integer> stations;
     private List<Integer> times;
+    private Integer 型钢切割工作站;
+    private Integer 地面钢网工作站;
+    private Integer 方通组焊工作站;
+    private Integer 模块总装工作站;
 }

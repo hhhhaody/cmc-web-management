@@ -27,7 +27,7 @@ public class ProductOperationController {
     public Result insert(@RequestBody ProductOperation productOperation){
         log.info("产品操作：{}",productOperation);
         String batch = productOperationService.insert(productOperation);
-        return Result.success(productOperation.getName()+ productOperation.getSpec()+"成功"+productOperation.getOperation()+productOperation.getAmount().toString()+productOperation.getQuality());
+        return Result.success(productOperation.getName()+ productOperation.getSpec()+"成功"+productOperation.getOperation()+productOperation.getAmount().toString()+"【"+productOperation.getQuality()+"】");
     }
 
     @GetMapping

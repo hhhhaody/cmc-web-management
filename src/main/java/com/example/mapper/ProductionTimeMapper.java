@@ -77,8 +77,8 @@ public interface ProductionTimeMapper extends BaseMapper<ProductionTime> {
             "AND (#{itemModel} IS NULL OR pi.item_model LIKE CONCAT('%',#{itemModel},'%')) " +
             "AND (#{startDate} IS NULL OR pi.production_date >= #{startDate}) " +
             "AND (#{endDate} IS NULL OR pi.production_date <= #{endDate}) " +
-            "GROUP BY pi.item_code, pi.item_name, pi.item_model, pi.production_date " +
-            "ORDER BY pi.production_date DESC " +
+            "GROUP BY pi.item_code, pi.item_name, pi.item_model, pi.production_date, pi.update_time " +
+            "ORDER BY pi.update_time DESC, pi.production_date desc " +
             "LIMIT #{pageSize} OFFSET #{offset}")
     List<ProductionDetailDto> findDetailsBySectionWithDate(
             @Param("section") String section,

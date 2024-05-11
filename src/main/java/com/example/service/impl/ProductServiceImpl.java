@@ -86,7 +86,8 @@ public class ProductServiceImpl implements ProductService {
         List<Integer> stations = new ArrayList<>();
         List<Integer> times = new ArrayList<>();
         for(int i =0;i<theoreticalTimes.size();i++){
-            String station = productionLineMapper.getStationById(theoreticalTimes.get(i).getProductionLine());
+//            String station = productionLineMapper.getStationById(theoreticalTimes.get(i).getProductionLine());
+//            System.out.println(station);
             stations.add(theoreticalTimes.get(i).getProductionLine());
             times.add(theoreticalTimes.get(i).getTheoreticalTime());
         }

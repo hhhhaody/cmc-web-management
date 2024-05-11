@@ -204,7 +204,7 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
         Facility facility = facilityMapper.getBySerialNo(maintenancePlanMapper.getById(id).getSerialNo());
         if(facility.getStatus().equals("检修维护")){
-            return "设备已在检修中";
+            return "设备已在维护中";
         }
 
         //更新设备维护记录onging状态

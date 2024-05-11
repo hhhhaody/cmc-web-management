@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DataMapper">
+    <select id="listEnergyDates" resultType="com.example.pojo.EnergyRecord">
+        select distinct date
+        from energy_record e JOIN section_mapping s ON e.section = s.id
+        <where>
+            s.sectionName = #{section}
+            <if test="dateStart != null and dateEnd != null">
+                and date between #{dateStart} and #{dateEnd}
+            </if>
+        </where>
+        order by e.date desc
+    </select>
+    <select id="getEnergy" resultType="com.example.pojo.EnergyRecord">
+        select *
+        from energy_record
+        <where>
+            section = #{section}
+            <if test="date != null">
+                and date = #{date}
+            </if>
+        </where>
+        order by time asc
+    </select>
+    <select id="getTimeConsumed" resultType="com.example.pojo.ProductionDetailDto">
+        SELECT pi.item_code as itemCode, pi.item_name as itemName, pi.item_model as itemModel,
+               pi.production_date as productionDate,
+        GROUP_CONCAT(CONCAT(pl.station, ':', pt.time_spent)) as stationInfo
+        FROM production_time pt
+        JOIN production_line pl ON pt.production_line_id = pl.id
+        JOIN production_item pi ON pt.item_id = pi.item_id
+        WHERE pl.section = #{section}
+        GROUP BY pi.item_code, pi.item_name, pi.item_model, pi.production_date, pi.update_time
+        ORDER BY pi.update_time desc, pi.production_date DESC
+        LIMIT 1
+    </select>
+    <select id="getTheoreticalTime" resultType="com.example.pojo.ProductionDetailDto">
+        SELECT p.name as itemName, p.spec as itemModel,
+               GROUP_CONCAT(CONCAT(pl.station, ':', t.theoreticalTime)) as stationInfo
+        FROM theoretical_time t
+                 JOIN production_line pl ON t.productionLine = pl.id
+                 JOIN product p ON t.productId = p.id
+        where t.productId = #{productId}
+        GROUP BY p.name, p.spec
+    </select>
+    <select id="getMessage" resultType="java.lang.String">
+        select msg
+        from message
+        <where>
+            <if test="date != null">
+                and Date(update_time) = #{date}
+            </if>
+        </where>
+        order by update_time asc
+    </select>
+</mapper>

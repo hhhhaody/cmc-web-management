@@ -5,9 +5,12 @@ import com.example.service.DataService;
 import com.example.service.TroubleshootingRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -38,11 +41,26 @@ public class DataController {
         return Result.success("数据传递成功");
     }
 
+    @GetMapping("/material")
+    public Result getMaterialUsage(String section){
+        log.info("根据工段原材料使用情况查询，参数：{}",section);
+        List<Material> mateirals = dataService.getMaterialUsage(section);
+        return Result.success(mateirals);
+    }
+
+
     @PostMapping("/product")
     public Result product(@RequestBody ProductData productData){
         log.info("接收产品数量数据：{}", productData);
         dataService.product(productData);
         return Result.success("数据传递成功");
+    }
+
+    @GetMapping("/product")
+    public Result getProductAmount(String section){
+        log.info("根据工段查询产品生产情况，参数：{}",section);
+        List<Product> products = dataService.getProductAmount(section);
+        return Result.success(products);
     }
 
     @PostMapping("/state")
@@ -81,10 +99,49 @@ public class DataController {
         return Result.success("数据传递成功");
     }
 
+    @GetMapping("/timeConsumed")
+    public Result getTimeConsumed(String section){
+        log.info("根据工段查耗时情况：{}", section);
+        List<ProductionDetailDto> productionDetailDto = dataService.getTimeConsumed(section);
+        return Result.success(productionDetailDto);
+    }
+
     @PostMapping("/energy")
     public Result energy(@RequestBody EnergyData energyData){
         log.info("接收能耗数据：{}", energyData);
         dataService.energy(energyData);
         return Result.success("数据传递成功");
     }
+
+    @GetMapping("/energy")
+    public Result getEnergy(String section,LocalDate date){
+        log.info("根据工段查询能耗情况，参数：{},{}",section,date);
+        List<EnergyRecord> energyRecords = dataService.getEnergy(section,date);
+        return Result.success(energyRecords);
+    }
+
+    /**
+     * 物料查询
+     * @param page
+     * @param pageSize
+     * @param section
+     * @return
+     */
+    @GetMapping("/energy/list")
+    public Result page(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String section,
+                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateEnd){
+        log.info("根据工段分页查询能耗情况，参数：{},{},{},{},{}",page,pageSize,section,dateStart,dateEnd);
+        PageBean pageBean = dataService.listEnergyDates(page,pageSize,section,dateStart,dateEnd);
+        return Result.success(pageBean);
+    }
+
+    @GetMapping("/message")
+    public Result getMessage(LocalDate date){
+        log.info("根据工段查询能耗情况，参数：{}",date);
+        List<String> messages = dataService.getMessage(date);
+        return Result.success(messages);
+    }
+
 }

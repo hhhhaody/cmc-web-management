@@ -2,10 +2,7 @@ package com.example.mapper;
 
 import com.example.pojo.Product;
 import com.example.pojo.Value;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -77,4 +74,11 @@ public interface ProductMapper {
     Integer getBatch(String name, String spec);
 
     void calAmount();
+
+    @Select("select `${field}` from product where id = #{id}")
+    Integer getProductionAmount(Long id, String field);
+
+
+    @Update("update product set `${field}` =#{amount} where id = #{id}")
+    void setProductionAmount(Long id, String field, long amount);
 }
