@@ -20,5 +20,5 @@ public interface TroubleshootingRecordService {
 
     void update(TroubleshootingRecord troubleshootingRecord);
 
-    void addById(Long id);
+    void addById(Long id, String state);
 }

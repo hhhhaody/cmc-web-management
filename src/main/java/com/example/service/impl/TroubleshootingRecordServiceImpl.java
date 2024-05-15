@@ -134,8 +134,7 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
     //根据设备映射表id新增设备维护记录
     @Override
     @Transactional
-    public void addById(Long id) {
-        //TODO:新增设备维护记录
+    public void addById(Long id, String state) {
         //新增故障维修记录表
         //根据mappingId读取设备信息
         Facility facility = facilityMapper.getByMappingId(id);
@@ -162,7 +161,8 @@ public class TroubleshootingRecordServiceImpl implements TroubleshootingRecordSe
         Integer sectionId =  dataMapper.getSectionId(facility.getSection());
 
         //根据工段编号以及状态信息查询状态编号
-        Integer stateId = dataMapper.getStateId("报警",sectionId);
+
+        Integer stateId = dataMapper.getStateId(state,sectionId);
 
         //查询最近一次此状态发生时间
         troubleshootingRecord.setErrorTime(dataMapper.getLatestStateTime(id,stateId));

@@ -88,7 +88,7 @@ public class DataController {
         dataService.setStatus(id);
 
         //新增检修维护记录
-        troubleshootingRecordService.addById(id);
+        troubleshootingRecordService.addById(id,"报警");
         return Result.success();
     }
 

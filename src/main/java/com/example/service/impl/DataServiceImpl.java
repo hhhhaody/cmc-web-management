@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.example.mapper.*;
 import com.example.pojo.*;
 import com.example.service.DataService;
+import com.example.service.TroubleshootingRecordService;
 import com.example.utils.PinYinUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -33,14 +34,15 @@ public class DataServiceImpl implements DataService {
     @Autowired
     private ProductionLineMapper productionLineMapper;
 
+    @Autowired
+    private TroubleshootingRecordService troubleshootingRecordService;
+
     @Transactional
     @Override
     public void alarm(AlarmData alarmData) {
-        try {
             //根据设备反馈数据更新报警表alarm_mapping
             dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
-        } catch (Exception e) {
-        }
+
         dataMapper.alarm(alarmData);
     }
 
@@ -48,7 +50,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public void material(MaterialData materialData) {
         //更新物料库存表
-        try {
+        if(materialData.getMaterialID() != 0) {
             Material material = materialMapper.getById(Math.toIntExact(materialData.getMaterialID()));
 
             if (material.getUsage() == null) {
@@ -59,8 +61,6 @@ public class DataServiceImpl implements DataService {
             String sectionName = dataMapper.getSectionName(materialData.getSectionID());
             Integer section_usage = materialMapper.getUsage(material.getId(), sectionName);
             materialMapper.setUsage(material.getId(), sectionName, section_usage + materialData.getAmount());
-        } catch (Exception e) {
-
         }
         dataMapper.material(materialData);
     }
@@ -69,12 +69,10 @@ public class DataServiceImpl implements DataService {
     @Override
     public void product(ProductData productData) {
         //更新产品表生产量
-        try {
+        if(productData.getProductID() != 0) {
             String sectionName = dataMapper.getSectionName(productData.getSectionID());
             Integer section_production = productMapper.getProductionAmount(productData.getProductID(), sectionName);
             productMapper.setProductionAmount(productData.getProductID(), sectionName, section_production + productData.getAmount());
-        } catch (Exception e) {
-
         }
         dataMapper.product(productData);
     }
@@ -82,7 +80,9 @@ public class DataServiceImpl implements DataService {
     @Override
     @Transactional
     public void state(StateData stateData) {
-        try {
+        dataMapper.state(stateData);
+
+        if(stateData.getStateID() != 0) {
             //根据设备反馈数据更新设备映射表device_mapping
             String state = dataMapper.getStateInfo(stateData.getStateID());
             dataMapper.setState(stateData.getStationID(), state);
@@ -114,21 +114,19 @@ public class DataServiceImpl implements DataService {
                         break;
                     default:
                         statusNew = "检修维护";
+                        troubleshootingRecordService.addById(stateData.getStationID(),state);
                 }
                 dataMapper.setStatus(stateData.getStationID(), statusNew);
 
             }
 
-
-        } catch (Exception e) {
         }
-        dataMapper.state(stateData);
     }
 
     @Override
     @Transactional
     public void timeConsumed(TimeConsumedData timeConsumedData) {
-        try {
+        if(timeConsumedData.getProductID() != 0) {
             LocalDate now = LocalDate.now();
             timeConsumedData.setTimeConsumed(timeConsumedData.getTimeConsumed() / 1000);
             Product product = productMapper.getById(Math.toIntExact(timeConsumedData.getProductID()));
@@ -156,7 +154,6 @@ public class DataServiceImpl implements DataService {
                 //不存在则新增耗时
                 dataMapper.postTimeSpent(item_id, production_line_id, timeConsumedData.getTimeConsumed());
             }
-        } catch (Exception e) {
         }
         dataMapper.timeConsumed(timeConsumedData);
     }
