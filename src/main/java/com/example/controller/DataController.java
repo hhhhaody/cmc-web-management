@@ -140,7 +140,7 @@ public class DataController {
     @GetMapping("/message")
     public Result getMessage(LocalDate date){
         log.info("根据工段查询能耗情况，参数：{}",date);
-        List<String> messages = dataService.getMessage(date);
+        List<Message> messages = dataService.getMessage(date);
         return Result.success(messages);
     }
 

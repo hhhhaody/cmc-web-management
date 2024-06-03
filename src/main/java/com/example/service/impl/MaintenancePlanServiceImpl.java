@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.mapper.DataMapper;
 import com.example.mapper.FacilityMapper;
 import com.example.mapper.FacilityStatusMapper;
 import com.example.mapper.MaintenancePlanMapper;
@@ -27,6 +28,9 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
     @Autowired
     FacilityStatusMapper facilityStatusMapper;
+
+    @Autowired
+    DataMapper dataMapper;
 
     @Transactional
     @Override
@@ -134,6 +138,11 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
         //更新设备状态
         facilityMapper.updateStatusBySerialNo(maintenancePlan.getSerialNo(),"正常使用");
+
+        //更新device_mapping状态
+        dataMapper.setStatus(facility.getMappingId(),"正常使用");
+
+
         //更新设备状态记录表
         facilityStatusMapper.insert(facilityStatus);
 
@@ -204,8 +213,10 @@ public class MaintenancePlanServiceImpl implements MaintenancePlanService {
 
         Facility facility = facilityMapper.getBySerialNo(maintenancePlanMapper.getById(id).getSerialNo());
         if(facility.getStatus().equals("检修维护")){
-            return "设备已在维护中";
+            return "设备已在检修维护中";
         }
+        //更新device_mapping状态
+        dataMapper.setStatus(facility.getMappingId(),"检修维护");
 
         //更新设备维护记录onging状态
         maintenancePlanMapper.updateOngoingStatus(id);

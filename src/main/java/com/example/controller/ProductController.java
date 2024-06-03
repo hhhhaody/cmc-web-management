@@ -21,7 +21,12 @@ public class ProductController {
     @PostMapping
     public Result insert(@RequestBody Product product){
         log.info("新增产品:{}",product);
-        productService.insert(product);
+        try{
+            productService.insert(product);
+        }
+        catch (Exception e){
+            return Result.error("该产品类型已存在");
+        }
         return Result.success("新增成功");
     }
 
@@ -97,7 +102,12 @@ public class ProductController {
     @PutMapping()
     public Result update(@RequestBody Product product){
         log.info("更新物料信息");
-        productService.update(product);
+        try{
+            productService.update(product);
+        }
+        catch (Exception e){
+            return Result.error("该产品类型已存在");
+        }
         return Result.success("更新成功");
     }
 

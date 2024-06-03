@@ -80,8 +80,8 @@ public interface MaterialMapper {
      * 检查当前物料是否已存在
      * @param material
      */
-    @Select("select count(*) from material where name=#{name} and spec = #{spec}")
-    Integer check(Material material);
+    @Select("select * from material where name=#{name} and spec = #{spec}")
+    Material check(Material material);
 
     @Update("update material set `${field}` =#{amount} where id = #{id}")
     void setUsage(Integer id,String field, Long amount);

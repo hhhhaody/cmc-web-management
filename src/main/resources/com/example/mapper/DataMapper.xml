@@ -46,8 +46,8 @@
         where t.productId = #{productId}
         GROUP BY p.name, p.spec
     </select>
-    <select id="getMessage" resultType="java.lang.String">
-        select msg
+    <select id="getMessage" resultType="com.example.pojo.Message">
+        select *
         from message
         <where>
             <if test="date != null">

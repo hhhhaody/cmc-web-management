@@ -34,5 +34,5 @@ public interface DataService {
 
     List<ProductionDetailDto> getTimeConsumed(String section);
 
-    List<String> getMessage(LocalDate date);
+    List<Message> getMessage(LocalDate date);
 }

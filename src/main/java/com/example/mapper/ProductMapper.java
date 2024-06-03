@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.pojo.Material;
 import com.example.pojo.Product;
 import com.example.pojo.Value;
 import org.apache.ibatis.annotations.*;
@@ -81,4 +82,7 @@ public interface ProductMapper {
 
     @Update("update product set `${field}` =#{amount} where id = #{id}")
     void setProductionAmount(Long id, String field, long amount);
+
+    @Select("select * from product where name=#{name} and spec = #{spec}")
+    Product check(Product product);
 }

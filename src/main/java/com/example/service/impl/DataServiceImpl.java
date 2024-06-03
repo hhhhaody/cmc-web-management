@@ -40,8 +40,12 @@ public class DataServiceImpl implements DataService {
     @Transactional
     @Override
     public void alarm(AlarmData alarmData) {
-            //根据设备反馈数据更新报警表alarm_mapping
-            dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
+        //根据设备反馈数据更新报警表alarm_mapping
+        dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
+
+        Facility facility = dataMapper.getDeviceByAlarmId(alarmData.getAlarmID());
+        if(facility.getName() == "控制系统"){
+        }
 
         dataMapper.alarm(alarmData);
     }
@@ -50,7 +54,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public void material(MaterialData materialData) {
         //更新物料库存表
-        if(materialData.getMaterialID() != 0) {
+        if(materialData.getMaterialID() != 0 && materialData.getProductID() != 0) {
             Material material = materialMapper.getById(Math.toIntExact(materialData.getMaterialID()));
 
             if (material.getUsage() == null) {
@@ -218,7 +222,7 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public List<String> getMessage(LocalDate date) {
+    public List<Message> getMessage(LocalDate date) {
         return dataMapper.getMessage(date);
     }
 

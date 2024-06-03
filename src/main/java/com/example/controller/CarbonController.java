@@ -25,7 +25,7 @@ public class CarbonController {
                        @RequestParam(defaultValue = "10") Integer pageSize,
                        String type, String section,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate){
-        log.info("分页查询，参数：{},{},{},{},{}",page,pageSize,type,section, startDate,endDate);
+        log.info("分页查询，参数：{},{},{},{},{},{}",page,pageSize,type,section, startDate,endDate);
         PageBean pageBean = carbonService.page(page,pageSize,type,section, startDate,endDate);
         return Result.success(pageBean);
     }

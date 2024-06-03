@@ -109,5 +109,8 @@ public interface DataMapper {
     @Insert("insert into message (msg) values (#{msg})")
     void info(String msg);
 
-    List<String> getMessage(LocalDate date);
+    List<Message> getMessage(LocalDate date);
+
+    @Select("select * from facility join alarm_mapping on facility.mappingId = alarm_mapping.deviceId where alarm_mapping.id = #{alarmID};")
+    Facility getDeviceByAlarmId(Long alarmID);
 }

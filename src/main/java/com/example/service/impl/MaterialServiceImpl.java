@@ -26,17 +26,17 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void insert(Material material) {
-        if (materialMapper.check(material)!= 1){
+        if (materialMapper.check(material) == null){
         Integer batch = materialMapper.getMaxBatch(material.getName());
         if(batch != null){
             material.setBatch(batch+1);
         }
         else material.setBatch(1);
         materialMapper.insert(material);
-    }
-    else{
+        }
+        else{
         throw new RuntimeException();
-    }
+        }
     }
 
     @Override
@@ -66,7 +66,24 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void update(Material material) {
-        materialMapper.update(material);
+        Material res = materialMapper.check(material);
+        if (res == null){
+            Integer batch = materialMapper.getMaxBatch(material.getName());
+            if(batch != null){
+                material.setBatch(batch+1);
+            }
+            else material.setBatch(1);
+
+            materialMapper.update(material);
+        }
+        else{
+            if(res.getId() == material.getId()){
+                materialMapper.update(material);
+            }
+            else{
+                throw new RuntimeException();
+            }
+        }
     }
 
     @Override

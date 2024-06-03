@@ -28,22 +28,27 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public void insert(Product product) {
-        Integer batch = productMapper.getMaxBatch(product.getName());
-        if(batch != null){
-            product.setBatch(batch+1);
-        }
-        else product.setBatch(1);
-        productMapper.insert(product);
+        if(productMapper.check(product) == null){
+            Integer batch = productMapper.getMaxBatch(product.getName());
+            if(batch != null){
+                product.setBatch(batch+1);
+            }
+            else product.setBatch(1);
+            productMapper.insert(product);
 
-        Integer id = productMapper.getId(product.getName(),product.getSpec());
-        List<Integer> stationsIds = product.getStations();
-        List<Integer> times = product.getTimes();
-        for (int i = 0; i < stationsIds.size(); i++){
-            TheoreticalTime theoreticalTime = new TheoreticalTime();
-            theoreticalTime.setProductId(id);
-            theoreticalTime.setProductionLine(stationsIds.get(i));
-            theoreticalTime.setTheoreticalTime(times.get(i));
-            theoreticalTimeMapper.insert(theoreticalTime);
+            Integer id = productMapper.getId(product.getName(),product.getSpec());
+            List<Integer> stationsIds = product.getStations();
+            List<Integer> times = product.getTimes();
+            for (int i = 0; i < stationsIds.size(); i++){
+                TheoreticalTime theoreticalTime = new TheoreticalTime();
+                theoreticalTime.setProductId(id);
+                theoreticalTime.setProductionLine(stationsIds.get(i));
+                theoreticalTime.setTheoreticalTime(times.get(i));
+                theoreticalTimeMapper.insert(theoreticalTime);
+            }
+        }
+        else{
+            throw new RuntimeException();
         }
     }
 
@@ -99,19 +104,49 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public void update(Product product) {
-        //更新理论耗时表
-        Integer id = product.getId();
-        List<Integer> stationsIds = product.getStations();
-        List<Integer> times = product.getTimes();
-        for (int i = 0; i < stationsIds.size(); i++){
-            TheoreticalTime theoreticalTime = new TheoreticalTime();
-            theoreticalTime.setProductId(id);
-            theoreticalTime.setProductionLine(stationsIds.get(i));
-            theoreticalTime.setTheoreticalTime(times.get(i));
-            theoreticalTimeMapper.update(theoreticalTime);
+        Product res = productMapper.check(product);
+        if(res == null){
+            Integer batch = productMapper.getMaxBatch(product.getName());
+            if(batch != null){
+                product.setBatch(batch+1);
+            }
+            else product.setBatch(1);
+
+            //更新理论耗时表
+            Integer id = product.getId();
+            List<Integer> stationsIds = product.getStations();
+            List<Integer> times = product.getTimes();
+            for (int i = 0; i < stationsIds.size(); i++){
+                TheoreticalTime theoreticalTime = new TheoreticalTime();
+                theoreticalTime.setProductId(id);
+                theoreticalTime.setProductionLine(stationsIds.get(i));
+                theoreticalTime.setTheoreticalTime(times.get(i));
+                theoreticalTimeMapper.update(theoreticalTime);
+            }
+            //只更新了名称,规格型号,阈值
+            productMapper.update(product);
         }
-        //只更新了名称,规格型号,阈值
-        productMapper.update(product);
+        else{
+            if(res.getId() == product.getId()){
+                //更新理论耗时表
+                Integer id = product.getId();
+                List<Integer> stationsIds = product.getStations();
+                List<Integer> times = product.getTimes();
+                for (int i = 0; i < stationsIds.size(); i++){
+                    TheoreticalTime theoreticalTime = new TheoreticalTime();
+                    theoreticalTime.setProductId(id);
+                    theoreticalTime.setProductionLine(stationsIds.get(i));
+                    theoreticalTime.setTheoreticalTime(times.get(i));
+                    theoreticalTimeMapper.update(theoreticalTime);
+                }
+                //只更新了名称,规格型号,阈值
+                productMapper.update(product);
+            }
+            else{
+                throw new RuntimeException();
+            }
+        }
+
     }
 
     @Transactional

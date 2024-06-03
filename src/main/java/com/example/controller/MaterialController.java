@@ -128,7 +128,12 @@ public class MaterialController {
     @PutMapping()
     public Result update(@RequestBody Material material){
         log.info("更新物料信息");
-        materialService.update(material);
+        try{
+            materialService.update(material);
+        }
+        catch (Exception e){
+            return Result.error("该物料类型已存在");
+        }
         return Result.success("更新成功");
     }
 }

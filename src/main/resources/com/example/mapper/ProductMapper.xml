@@ -18,6 +18,9 @@
             <if test="stackThreshold != null">
                 stackThreshold = #{stackThreshold},
             </if>
+            <if test="batch != null">
+                batch = #{batch},
+            </if>
         </set>
         where id = #{id}
     </update>
@@ -52,7 +55,7 @@
                 and spec like concat('%', #{spec}, '%')
             </if>
         </where>
-        Order by name
+        Order by name and spec
     </select>
     <select id="search" resultType="com.example.pojo.Value">
         select distinct ${field} as value from product

@@ -84,7 +84,7 @@
                 and supplier like concat('%', #{supplier}, '%')
             </if>
         </where>
-        Order by name
+        Order by serialNo
     </select>
     <select id="search" resultType="com.example.pojo.Value">
         select distinct ${field} as value from facility
