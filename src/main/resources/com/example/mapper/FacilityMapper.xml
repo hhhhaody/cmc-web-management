@@ -33,7 +33,7 @@
             <if test="warranty != null and warranty != ''">
                 warranty = #{warranty},
             </if>
-            <if test="dailyMaintenance != null and dailyMaintenance != ''">
+            <if test="dailyMaintenance != null">
                 dailyMaintenance = #{dailyMaintenance},
             </if>
             <if test="firstLevelMaintenance != null and firstLevelMaintenance != ''">

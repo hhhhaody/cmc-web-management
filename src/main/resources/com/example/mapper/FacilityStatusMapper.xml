@@ -11,10 +11,10 @@
                 section = #{section}
             </if>
             <if test="serialNo != null and serialNo != ''">
-                serialNo = #{serialNo}
+                and serialNo = #{serialNo}
             </if>
             <if test="name != null and name != ''">
-                name like concat('%', #{name}, '%')
+                and name like concat('%', #{name}, '%')
             </if>
             <if test="spec != null and spec != ''">
                 and spec like concat('%', #{spec}, '%')

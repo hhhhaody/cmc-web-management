@@ -140,56 +140,63 @@ public class FacilityServiceImpl implements FacilityService {
         if(facility.getPrevMaintenanceman()!=null && facility.getPrevInfo()!=null){
             facility.setPrevDailyTime(LocalDateTime.now());
         }
-        //删除此设备之前所有设备维护计划
-        maintenancePlanMapper.deleteBySerialNo(facility.getSerialNo());
+        //判断是否为日常保养更新
+        if(facility.getPrevMaintenanceman() == null) {
 
-        //根据更新的信息新增维护计划
-        String firstLevelMaintenance = facility.getFirstLevelMaintenance();
-        String secondLevelMaintenance = facility.getSecondLevelMaintenance();
-        LocalDateTime start = facility.getPurchaseTime();
 
-        Integer first = Integer.parseInt(firstLevelMaintenance.replaceAll("[^0-9]", ""));
-        Integer second = Integer.parseInt(secondLevelMaintenance.replaceAll("[^0-9]", ""));
+            //删除此设备之前所有设备维护计划
+            maintenancePlanMapper.deleteBySerialNo(facility.getSerialNo());
 
-        MaintenancePlan maintenancePlan1 = new MaintenancePlan();
-        MaintenancePlan maintenancePlan2 = new MaintenancePlan();
+            //根据更新的信息新增维护计划
+            String firstLevelMaintenance = facility.getFirstLevelMaintenance();
+            String secondLevelMaintenance = facility.getSecondLevelMaintenance();
+            LocalDateTime start = facility.getPurchaseTime();
 
-        maintenancePlan1.setName(facility.getName());
-        maintenancePlan1.setSpec(facility.getSpec());
-        maintenancePlan1.setSection(facility.getSection());
-        maintenancePlan1.setStation(facility.getStation());
-        maintenancePlan1.setSerialNo(facility.getSerialNo());
-        maintenancePlan1.setType("一级保养");
-        maintenancePlan1.setStatus("待完成");
-        maintenancePlan1.setOngoing(false);
-        if(firstLevelMaintenance.endsWith("月")){
-            maintenancePlan1.setPlannedTime(start.plusMonths(first));
-        } else if (firstLevelMaintenance.endsWith("周")) {
-            maintenancePlan1.setPlannedTime(start.plusWeeks(first));
-        } else{
-            maintenancePlan1.setPlannedTime(start.plusYears(first));
-        }
+            Integer first = Integer.parseInt(firstLevelMaintenance.replaceAll("[^0-9]", ""));
+            Integer second = Integer.parseInt(secondLevelMaintenance.replaceAll("[^0-9]", ""));
 
-        maintenancePlan2.setName(facility.getName());
-        maintenancePlan2.setSpec(facility.getSpec());
-        maintenancePlan2.setSection(facility.getSection());
-        maintenancePlan2.setStation(facility.getStation());
-        maintenancePlan2.setSerialNo(facility.getSerialNo());
-        maintenancePlan2.setType("二级保养");
-        maintenancePlan2.setStatus("待完成");
-        maintenancePlan2.setOngoing(false);
-        if(secondLevelMaintenance.endsWith("月")){
-            maintenancePlan2.setPlannedTime(start.plusMonths(second));
-        }
-        else if(secondLevelMaintenance.endsWith("周")){
-            maintenancePlan2.setPlannedTime(start.plusWeeks(second));
+            MaintenancePlan maintenancePlan1 = new MaintenancePlan();
+            MaintenancePlan maintenancePlan2 = new MaintenancePlan();
+
+            maintenancePlan1.setName(facility.getName());
+            maintenancePlan1.setSpec(facility.getSpec());
+            maintenancePlan1.setSection(facility.getSection());
+            maintenancePlan1.setStation(facility.getStation());
+            maintenancePlan1.setSerialNo(facility.getSerialNo());
+            maintenancePlan1.setType("一级保养");
+            maintenancePlan1.setStatus("待完成");
+            maintenancePlan1.setOngoing(false);
+            if (firstLevelMaintenance.endsWith("月")) {
+                maintenancePlan1.setPlannedTime(start.plusMonths(first));
+            } else if (firstLevelMaintenance.endsWith("周")) {
+                maintenancePlan1.setPlannedTime(start.plusWeeks(first));
+            } else {
+                maintenancePlan1.setPlannedTime(start.plusYears(first));
+            }
+
+            maintenancePlan2.setName(facility.getName());
+            maintenancePlan2.setSpec(facility.getSpec());
+            maintenancePlan2.setSection(facility.getSection());
+            maintenancePlan2.setStation(facility.getStation());
+            maintenancePlan2.setSerialNo(facility.getSerialNo());
+            maintenancePlan2.setType("二级保养");
+            maintenancePlan2.setStatus("待完成");
+            maintenancePlan2.setOngoing(false);
+            if (secondLevelMaintenance.endsWith("月")) {
+                maintenancePlan2.setPlannedTime(start.plusMonths(second));
+            } else if (secondLevelMaintenance.endsWith("周")) {
+                maintenancePlan2.setPlannedTime(start.plusWeeks(second));
+            } else {
+                maintenancePlan2.setPlannedTime(start.plusYears(second));
+            }
+
+            maintenancePlanMapper.insert(maintenancePlan1);
+            maintenancePlanMapper.insert(maintenancePlan2);
         }
         else{
-            maintenancePlan2.setPlannedTime(start.plusYears(second));
-        }
+            //日常保养更新
 
-        maintenancePlanMapper.insert(maintenancePlan1);
-        maintenancePlanMapper.insert(maintenancePlan2);
+        }
         facilityMapper.update(facility);
     }
 

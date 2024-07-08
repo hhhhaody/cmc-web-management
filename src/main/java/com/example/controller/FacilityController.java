@@ -117,7 +117,7 @@ public class FacilityController {
      */
     @PutMapping()
     public Result update(@RequestBody Facility facility){
-        log.info("更新设备信息");
+        log.info("更新设备信息,{}",facility);
         facilityService.update(facility);
         return Result.success("更新成功");
     }
