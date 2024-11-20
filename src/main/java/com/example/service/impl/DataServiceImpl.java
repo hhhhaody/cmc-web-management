@@ -226,5 +226,8 @@ public class DataServiceImpl implements DataService {
         return dataMapper.getMessage(date);
     }
 
-
+    @Override
+    public void inspection(Inspection inspection) {
+        dataMapper.insertInspection(inspection);
+    }
 }

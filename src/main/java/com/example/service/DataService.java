@@ -35,4 +35,6 @@ public interface DataService {
     List<ProductionDetailDto> getTimeConsumed(String section);
 
     List<Message> getMessage(LocalDate date);
+
+    void inspection(Inspection inspection);
 }

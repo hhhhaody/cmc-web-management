@@ -49,7 +49,7 @@
                 and spec like concat('%', #{spec}, '%')
             </if>
         </where>
-        Order by name, spec
+        order by name, spec
     </select>
     <select id="search" resultType="com.example.pojo.Value">
         select distinct ${field} as value from material

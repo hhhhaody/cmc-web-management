@@ -113,4 +113,6 @@ public interface DataMapper {
 
     @Select("select * from facility join alarm_mapping on facility.mappingId = alarm_mapping.deviceId where alarm_mapping.id = #{alarmID};")
     Facility getDeviceByAlarmId(Long alarmID);
+
+    void insertInspection(Inspection inspection);
 }
