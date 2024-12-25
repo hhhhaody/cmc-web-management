@@ -173,4 +173,10 @@ public class DataController {
         return Result.success(pageBean);
     }
 
+    @PostMapping("/inspection")
+    public Result inspection(@RequestBody Inspection inspection){
+        dataService.inspection(inspection);
+        return Result.success("数据传递成功");
+    }
+
 }

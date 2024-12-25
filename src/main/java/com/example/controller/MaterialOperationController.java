@@ -32,7 +32,7 @@ public class MaterialOperationController {
 
     @GetMapping
     public Result page(@RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       @RequestParam(defaultValue = "100") Integer pageSize,
                        String operation, String name, String spec,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime operateTimeStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime operateTimeEnd,
                        String supplier, String operator){

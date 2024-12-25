@@ -41,4 +41,6 @@ public interface DataService {
     PageBean listMaterialInspection(Integer page, Integer pageSize, String name, LocalDateTime dateStart, LocalDateTime dateEnd);
 
     List<GraphData> getProductInInventoryAmount(String section);
+
+    void inspection(Inspection inspection);
 }

@@ -120,4 +120,6 @@ public interface DataMapper {
     List<MaterialInspection> listMaterialInspection(String name, LocalDateTime dateStart, LocalDateTime dateEnd);
 
     List<GraphData> getProductInInventoryAmount(String section);
+
+    void insertInspection(Inspection inspection);
 }

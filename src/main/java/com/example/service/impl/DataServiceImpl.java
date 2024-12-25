@@ -44,7 +44,7 @@ public class DataServiceImpl implements DataService {
         dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
 
         Facility facility = dataMapper.getDeviceByAlarmId(alarmData.getAlarmID());
-        if (facility.getName() == "控制系统") {
+        if(facility.getName() == "控制系统"){
         }
 
         dataMapper.alarm(alarmData);
@@ -54,7 +54,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public void material(MaterialData materialData) {
         //更新物料库存表
-        if (materialData.getMaterialID() != 0 && materialData.getProductID() != 0) {
+        if(materialData.getMaterialID() != 0 && materialData.getProductID() != 0) {
             Material material = materialMapper.getById(Math.toIntExact(materialData.getMaterialID()));
 
             if (material.getUsage() == null) {
@@ -73,7 +73,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public void product(ProductData productData) {
         //更新产品表生产量
-        if (productData.getProductID() != 0) {
+        if(productData.getProductID() != 0) {
             String sectionName = dataMapper.getSectionName(productData.getSectionID());
             Integer section_production = productMapper.getProductionAmount(productData.getProductID(), sectionName);
             productMapper.setProductionAmount(productData.getProductID(), sectionName, section_production + productData.getAmount());
@@ -86,7 +86,7 @@ public class DataServiceImpl implements DataService {
     public void state(StateData stateData) {
         dataMapper.state(stateData);
 
-        if (stateData.getStateID() != 0) {
+        if(stateData.getStateID() != 0) {
             //根据设备反馈数据更新设备映射表device_mapping
             String state = dataMapper.getStateInfo(stateData.getStateID());
             dataMapper.setState(stateData.getStationID(), state);
@@ -118,7 +118,7 @@ public class DataServiceImpl implements DataService {
                         break;
                     default:
                         statusNew = "检修维护";
-                        troubleshootingRecordService.addById(stateData.getStationID(), state);
+                        troubleshootingRecordService.addById(stateData.getStationID(),state);
                 }
                 dataMapper.setStatus(stateData.getStationID(), statusNew);
 
@@ -130,7 +130,7 @@ public class DataServiceImpl implements DataService {
     @Override
     @Transactional
     public void timeConsumed(TimeConsumedData timeConsumedData) {
-        if (timeConsumedData.getProductID() != 0) {
+        if(timeConsumedData.getProductID() != 0) {
             LocalDate now = LocalDate.now();
             timeConsumedData.setTimeConsumed(timeConsumedData.getTimeConsumed() / 1000);
             Product product = productMapper.getById(Math.toIntExact(timeConsumedData.getProductID()));
@@ -250,4 +250,8 @@ public class DataServiceImpl implements DataService {
 
 
 
+    @Override
+    public void inspection(Inspection inspection) {
+        dataMapper.insertInspection(inspection);
+    }
 }

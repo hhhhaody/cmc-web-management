@@ -167,11 +167,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.76</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba</groupId>-->
-<!--            <artifactId>fastjson</artifactId>-->
-<!--            <version>1.2.76</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alibaba</groupId>-->
+        <!--            <artifactId>fastjson</artifactId>-->
+        <!--            <version>1.2.76</version>-->
+        <!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.hikvision.ga/artemis-http-client -->
         <dependency>
@@ -184,20 +184,27 @@
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
+
+
         <!--        <dependency>-->
-<!--            <groupId>org.mockito</groupId>-->
-<!--            <artifactId>mockito-core</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.commons</groupId>-->
-<!--            <artifactId>commons-lang3</artifactId>-->
-<!--            <version>3.12.0</version> &lt;!&ndash; 版本号根据实际情况调整 &ndash;&gt;-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.iceolive</groupId>-->
-<!--            <artifactId>stringutil</artifactId>-->
-<!--            <version>1.1.2</version>-->
-<!--        </dependency>-->
+        <!--            <groupId>org.mockito</groupId>-->
+        <!--            <artifactId>mockito-core</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.commons</groupId>-->
+        <!--            <artifactId>commons-lang3</artifactId>-->
+        <!--            <version>3.12.0</version> &lt;!&ndash; 版本号根据实际情况调整 &ndash;&gt;-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.iceolive</groupId>-->
+        <!--            <artifactId>stringutil</artifactId>-->
+        <!--            <version>1.1.2</version>-->
+        <!--        </dependency>-->
 
 
         <!--        <dependency>-->

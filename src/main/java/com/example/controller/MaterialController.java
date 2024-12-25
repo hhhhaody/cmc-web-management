@@ -29,7 +29,7 @@ public class MaterialController {
      */
     @GetMapping
     public Result page(@RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       @RequestParam(defaultValue = "100") Integer pageSize,
                        String name,String spec){
         log.info("分页查询，参数：{},{},{},{}",page,pageSize,name,spec);
         PageBean pageBean = materialService.page(page,pageSize,name,spec);
