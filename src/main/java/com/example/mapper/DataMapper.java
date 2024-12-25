@@ -113,4 +113,11 @@ public interface DataMapper {
 
     @Select("select * from facility join alarm_mapping on facility.mappingId = alarm_mapping.deviceId where alarm_mapping.id = #{alarmID};")
     Facility getDeviceByAlarmId(Long alarmID);
+
+    @Insert("insert into material_inspection (name, result) VALUES (#{name},#{result});")
+    void materialInspection(MaterialInspection materialInspection);
+
+    List<MaterialInspection> listMaterialInspection(String name, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    List<GraphData> getProductInInventoryAmount(String section);
 }

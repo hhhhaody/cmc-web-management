@@ -63,6 +63,18 @@ public class DataController {
         return Result.success(products);
     }
 
+    /**
+     * 根据库存情况查询已有产品生产情况
+     * @param section
+     * @return
+     */
+    @GetMapping("/productInInventory")
+    public Result getProductInInventoryAmount(String section){
+        log.info("根据工段查询产品生产情况，参数：{}",section);
+        List<GraphData> products = dataService.getProductInInventoryAmount(section);
+        return Result.success(products);
+    }
+
     @PostMapping("/state")
     public Result state(@RequestBody StateData stateData){
         log.info("接收工位状态数据：{}", stateData);
@@ -142,6 +154,23 @@ public class DataController {
         log.info("根据工段查询能耗情况，参数：{}",date);
         List<Message> messages = dataService.getMessage(date);
         return Result.success(messages);
+    }
+
+    @PostMapping("/materialInspection")
+    public Result materialInspection(@RequestBody MaterialInspection materialInspection){
+        log.info("接受来料检测数据：{}", materialInspection);
+        dataService.materialInspection(materialInspection);
+        return Result.success("数据传递成功");
+    }
+
+    @GetMapping("/materialInspection")
+    public Result materialInspectionPage(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String name,
+                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateEnd){
+        log.info("根据工段分页查询来料检测数据，参数：{},{},{},{},{}",page,pageSize,name,dateStart,dateEnd);
+        PageBean pageBean = dataService.listMaterialInspection(page,pageSize,name,dateStart,dateEnd);
+        return Result.success(pageBean);
     }
 
 }

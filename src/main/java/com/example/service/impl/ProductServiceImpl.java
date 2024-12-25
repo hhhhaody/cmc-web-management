@@ -146,7 +146,8 @@ public class ProductServiceImpl implements ProductService {
                 throw new RuntimeException();
             }
         }
-
+        //更新数量
+        productMapper.calAmount();
     }
 
     @Transactional

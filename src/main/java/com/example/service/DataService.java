@@ -35,4 +35,10 @@ public interface DataService {
     List<ProductionDetailDto> getTimeConsumed(String section);
 
     List<Message> getMessage(LocalDate date);
+
+    void materialInspection(MaterialInspection materialInspection);
+
+    PageBean listMaterialInspection(Integer page, Integer pageSize, String name, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    List<GraphData> getProductInInventoryAmount(String section);
 }

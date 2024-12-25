@@ -56,4 +56,45 @@
         </where>
         order by update_time asc
     </select>
+    <select id="listMaterialInspection" resultType="com.example.pojo.MaterialInspection">
+        select *
+        from material_inspection
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="dateStart != null and dateEnd != null">
+                and date between #{dateStart} and #{dateEnd}
+            </if>
+        </where>
+        Order by updateTime desc
+    </select>
+    <select id="getProductInInventoryAmount" resultType="com.example.pojo.GraphData">
+        SELECT
+            p.name,
+            SUM(p.qualified) AS value
+        FROM
+            product p
+                JOIN
+            (
+                SELECT
+                    t.productId,
+                    MIN(t.productionLine) AS firstProductionLine
+                FROM
+                    theoretical_time t
+                GROUP BY
+                    t.productId
+            ) AS t_first ON p.id = t_first.productId
+                JOIN
+            production_line pl ON t_first.firstProductionLine = pl.id
+        <where>
+            <if test="section != null and section != ''">
+                pl.section = #{section}
+            </if>
+        </where>
+        GROUP BY
+            p.name
+        ORDER BY
+            p.name;
+    </select>
 </mapper>
