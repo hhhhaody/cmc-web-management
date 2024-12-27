@@ -40,38 +40,54 @@ public class DataServiceImpl implements DataService {
     @Transactional
     @Override
     public void alarm(AlarmData alarmData) {
-        //根据设备反馈数据更新报警表alarm_mapping
-        dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
 
-        Facility facility = dataMapper.getDeviceByAlarmId(alarmData.getAlarmID());
-        if(facility.getName() == "控制系统"){
+        try{
+            //根据设备反馈数据更新报警表alarm_mapping
+            dataMapper.setAlarm(alarmData.getAlarmID(), alarmData.getState());
+
+            Facility facility = dataMapper.getDeviceByAlarmId(alarmData.getAlarmID());
+            if(facility.getName() == "控制系统"){
+            }
+
+            dataMapper.alarm(alarmData);
+        } catch (Exception e) {
+            System.out.println("请检查或更新映射文件与编号");
+
+            dataMapper.alarm(alarmData);
         }
 
-        dataMapper.alarm(alarmData);
     }
 
     @Transactional
     @Override
     public void material(MaterialData materialData) {
-        //更新物料库存表
-        if(materialData.getMaterialID() != 0 && materialData.getProductID() != 0) {
-            Material material = materialMapper.getById(Math.toIntExact(materialData.getMaterialID()));
 
-            if (material.getUsage() == null) {
-                materialMapper.setUsage(material.getId(), "usage", materialData.getAmount());
-            } else {
-                materialMapper.setUsage(material.getId(), "usage", material.getUsage() + materialData.getAmount());
+        try{
+            //更新物料库存表
+            if(materialData.getMaterialID() != 0 && materialData.getProductID() != 0) {
+                Material material = materialMapper.getById(Math.toIntExact(materialData.getMaterialID()));
+
+                if (material.getUsage() == null) {
+                    materialMapper.setUsage(material.getId(), "usage", materialData.getAmount());
+                } else {
+                    materialMapper.setUsage(material.getId(), "usage", material.getUsage() + materialData.getAmount());
+                }
+                String sectionName = dataMapper.getSectionName(materialData.getSectionID());
+                Integer section_usage = materialMapper.getUsage(material.getId(), sectionName);
+                materialMapper.setUsage(material.getId(), sectionName, section_usage + materialData.getAmount());
             }
-            String sectionName = dataMapper.getSectionName(materialData.getSectionID());
-            Integer section_usage = materialMapper.getUsage(material.getId(), sectionName);
-            materialMapper.setUsage(material.getId(), sectionName, section_usage + materialData.getAmount());
+            dataMapper.material(materialData);
+        } catch (Exception e){
+            System.out.println("请检查或更新映射文件与编号");
+            dataMapper.material(materialData);
         }
-        dataMapper.material(materialData);
     }
 
     @Transactional
     @Override
     public void product(ProductData productData) {
+
+        try{
         //更新产品表生产量
         if(productData.getProductID() != 0) {
             String sectionName = dataMapper.getSectionName(productData.getSectionID());
@@ -79,6 +95,11 @@ public class DataServiceImpl implements DataService {
             productMapper.setProductionAmount(productData.getProductID(), sectionName, section_production + productData.getAmount());
         }
         dataMapper.product(productData);
+        }
+        catch (Exception e){
+            System.out.println("请检查或更新映射文件与编号");
+            dataMapper.product(productData);
+        }
     }
 
     @Override
@@ -86,50 +107,59 @@ public class DataServiceImpl implements DataService {
     public void state(StateData stateData) {
         dataMapper.state(stateData);
 
-        if(stateData.getStateID() != 0) {
-            //根据设备反馈数据更新设备映射表device_mapping
-            String state = dataMapper.getStateInfo(stateData.getStateID());
-            dataMapper.setState(stateData.getStationID(), state);
+        try{
+            if(stateData.getStateID() != 0) {
+                //根据设备反馈数据更新设备映射表device_mapping
+                String state = dataMapper.getStateInfo(stateData.getStateID());
+                dataMapper.setState(stateData.getStationID(), state);
 
-            //处理报警与检修维护逻辑判断
-            String status = dataMapper.getStatusInfo(stateData.getStationID());
-            String statusNew;
+                //处理报警与检修维护逻辑判断
+                String status = dataMapper.getStatusInfo(stateData.getStationID());
+                String statusNew;
 
-            if (status.equals("报警")) {
+                if (status.equals("报警")) {
 //            dataMapper.setStatus(stateData.getStationID(),"报警");
-            } else if (status.equals("检修维护")) {
+                } else if (status.equals("检修维护")) {
 //            dataMapper.setStatus(stateData.getStationID(),"检修维护");
-            } else {
-                switch (state) {
-                    case "手动运行":
-                    case "自动运行":
-                    case "暂停":
-                        statusNew = "正常运行";
-                        break;
-                    case "报警":
-                        statusNew = "报警";
+                } else {
+                    switch (state) {
+                        case "手动运行":
+                        case "自动运行":
+                        case "暂停":
+                            statusNew = "正常运行";
+                            break;
+                        case "报警":
+                            statusNew = "报警";
 
-                        //推送报警信息到信息中心表
-                        Facility facility = facilityMapper.getByMappingId(stateData.getStationID());
-                        dataMapper.info("设备:【" + facility.getSection() + "-" + facility.getStation() + "-" + facility.getName() + "】故障报警");
-                        break;
-                    case "停止":
-                        statusNew = "停机";
-                        break;
-                    default:
-                        statusNew = "检修维护";
-                        troubleshootingRecordService.addById(stateData.getStationID(),state);
+                            //推送报警信息到信息中心表
+                            Facility facility = facilityMapper.getByMappingId(stateData.getStationID());
+                            dataMapper.info("设备:【" + facility.getSection() + "-" + facility.getStation() + "-" + facility.getName() + "】故障报警");
+                            break;
+                        case "停止":
+                            statusNew = "停机";
+                            break;
+                        default:
+                            statusNew = "检修维护";
+                            troubleshootingRecordService.addById(stateData.getStationID(),state);
+                    }
+                    dataMapper.setStatus(stateData.getStationID(), statusNew);
+
                 }
-                dataMapper.setStatus(stateData.getStationID(), statusNew);
 
             }
+        } catch (Exception e) {
+            System.out.println("请检查或更新映射文件与编号");
 
+            dataMapper.state(stateData);
         }
+
+
     }
 
     @Override
     @Transactional
     public void timeConsumed(TimeConsumedData timeConsumedData) {
+        try{
         if(timeConsumedData.getProductID() != 0) {
             LocalDate now = LocalDate.now();
             timeConsumedData.setTimeConsumed(timeConsumedData.getTimeConsumed() / 1000);
@@ -159,7 +189,11 @@ public class DataServiceImpl implements DataService {
                 dataMapper.postTimeSpent(item_id, production_line_id, timeConsumedData.getTimeConsumed());
             }
         }
-        dataMapper.timeConsumed(timeConsumedData);
+        dataMapper.timeConsumed(timeConsumedData);}
+        catch (Exception e){
+            System.out.println("请检查或更新映射文件与编号");
+            dataMapper.timeConsumed(timeConsumedData);
+        }
     }
 
     @Override
