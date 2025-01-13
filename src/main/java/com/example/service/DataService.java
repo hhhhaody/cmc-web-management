@@ -43,4 +43,12 @@ public interface DataService {
     List<GraphData> getProductInInventoryAmount(String section);
 
     void inspection(Inspection inspection);
+
+    void saveMaterialInspection(MaterialInspectionData materialInspectionData);
+
+    PageBean listMaterialInspections(Integer page, Integer pageSize, String type, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    List<MaterialInspectionData.Detail> getmaterialInspectionsDetailsByCode(String code);
+
+    List<Value> searchField(String field);
 }

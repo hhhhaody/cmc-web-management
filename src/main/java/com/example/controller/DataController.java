@@ -163,14 +163,51 @@ public class DataController {
         return Result.success("数据传递成功");
     }
 
+    @PostMapping("/saveMaterialInspection")
+    public Result saveMaterialInspection(@RequestBody MaterialInspectionData materialInspectionData){
+        log.info("接受来料检测数据：{}", materialInspectionData);
+        dataService.saveMaterialInspection(materialInspectionData);
+        return Result.success("数据传递成功");
+    }
+
     @GetMapping("/materialInspection")
     public Result materialInspectionPage(@RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer pageSize,
-                       String name,
-                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateEnd){
+                                         @RequestParam(defaultValue = "10") Integer pageSize,
+                                         String name,
+                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateEnd){
         log.info("根据工段分页查询来料检测数据，参数：{},{},{},{},{}",page,pageSize,name,dateStart,dateEnd);
         PageBean pageBean = dataService.listMaterialInspection(page,pageSize,name,dateStart,dateEnd);
         return Result.success(pageBean);
+    }
+
+    @GetMapping("/materialInspections")
+    public Result materialInspectionsPage(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String type,
+                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateStart, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateEnd){
+        log.info("根据工段分页查询来料检测数据，参数：{},{},{},{},{}",page,pageSize,type,dateStart,dateEnd);
+        PageBean pageBean = dataService.listMaterialInspections(page,pageSize,type,dateStart,dateEnd);
+        return Result.success(pageBean);
+    }
+
+    @GetMapping("/materialInspections/{code}")
+    public Result getmaterialInspectionsDetails(@PathVariable String code){
+        log.info("根据code查找检测项及结果：{}",code);
+        List<MaterialInspectionData.Detail> details = dataService.getmaterialInspectionsDetailsByCode(code);
+        return Result.success(details);
+    }
+
+    /**
+     * 搜索框联想查询
+     * @param field
+     * @return
+     */
+    @GetMapping("/search/{field}")
+    public Result searchField(@PathVariable String field){
+        log.info("根据field查询已有数据：{}",field);
+
+        List<Value> res =  dataService.searchField(field);
+        return Result.success(res);
     }
 
     @PostMapping("/inspection")

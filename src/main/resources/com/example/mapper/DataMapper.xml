@@ -101,4 +101,17 @@
         ORDER BY
             p.name;
     </select>
+    <select id="listMaterialInspections" resultType="com.example.pojo.MaterialInspectionData">
+        select *
+        from material_inspections
+        <where>
+            <if test="type != null and type != ''">
+                type like concat('%', #{type}, '%')
+            </if>
+            <if test="dateStart != null and dateEnd != null">
+                and updateTime between #{dateStart} and #{dateEnd}
+            </if>
+        </where>
+        Order by updateTime desc
+    </select>
 </mapper>

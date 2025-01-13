@@ -5,6 +5,7 @@ import com.example.pojo.*;
 import com.example.service.DataService;
 import com.example.service.TroubleshootingRecordService;
 import com.example.utils.PinYinUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DataServiceImpl implements DataService {
@@ -287,5 +289,53 @@ public class DataServiceImpl implements DataService {
     @Override
     public void inspection(Inspection inspection) {
         dataMapper.insertInspection(inspection);
+    }
+
+    /**
+     * 料检测数据上传
+     *
+     * @param
+     */
+    @Override
+    @Transactional
+    public void saveMaterialInspection(MaterialInspectionData data) {
+        //保存基础信息
+        dataMapper.insertInspectionInfo(data);
+
+        //保存details
+        // 插入 inspection_details 表
+        if (data.getDetails() != null) {
+            for (Map.Entry<String, MaterialInspectionData.Detail> entry : data.getDetails().entrySet()) {
+                String name = entry.getKey();
+                MaterialInspectionData.Detail detail = entry.getValue();
+
+                // 插入到数据库
+                if(detail.getQualification() != null) {
+                    dataMapper.insertInspectionDetail(data.getCode(), name, detail.getResults(), detail.getTolerance(),
+                            detail.getQualification());
+                }
+            }
+        }
+    }
+
+    @Override
+    public PageBean listMaterialInspections(Integer page, Integer pageSize, String type, LocalDateTime dateStart, LocalDateTime dateEnd) {
+        PageHelper.startPage(page, pageSize);
+
+        List<MaterialInspectionData> materialInspections = dataMapper.listMaterialInspections(type, dateStart, dateEnd);
+        Page<MaterialInspectionData> p = (Page<MaterialInspectionData>) materialInspections;
+
+        PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+        return pageBean;
+    }
+
+    @Override
+    public List<MaterialInspectionData.Detail> getmaterialInspectionsDetailsByCode(String code) {
+        return dataMapper.getmaterialInspectionsDetailsByCode(code);
+    }
+
+    @Override
+    public List<Value> searchField(String field) {
+        return dataMapper.searchField(field);
     }
 }

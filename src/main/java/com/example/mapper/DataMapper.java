@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DataMapper {
@@ -122,4 +123,27 @@ public interface DataMapper {
     List<GraphData> getProductInInventoryAmount(String section);
 
     void insertInspection(Inspection inspection);
+
+    //插入基础信息
+    @Insert("INSERT INTO material_inspections (code, type, qualification,pics) VALUES (#{code}, #{type}, #{qualification},#{pics})")
+    void insertInspectionInfo(MaterialInspectionData materialInspectionData);
+
+    // 插入 inspection_details 表
+    @Insert("INSERT INTO inspection_details (inspection_code, name, results, tolerance, qualification) " +
+            "VALUES (#{inspectionCode}, #{name}, #{results}, #{tolerance}, #{qualification})")
+    void insertInspectionDetail(String inspectionCode, String name, String results, String tolerance,
+                                String qualification);
+
+    List<MaterialInspectionData> listMaterialInspections(String type, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+    @Select("SELECT * FROM inspection_details id WHERE id.inspection_code = #{code}")
+    List<MaterialInspectionData.Detail> getmaterialInspectionsDetailsByCode(String code);
+
+    /**
+     * 查询此field已有数据
+     * @param field
+     * @return
+     */
+    @Select("select distinct ${field} as value from material_inspections order by value")
+    List<Value> searchField(String field);
 }
